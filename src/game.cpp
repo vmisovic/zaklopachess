@@ -1,12 +1,6 @@
 #include "../lib/game.hpp"
-#include <cctype>
 
 Game::Game() {
-    circle.setRadius(32.f);
-    circle.setFillColor(sf::Color(255, 0, 0, 192));
-    square.setSize(sf::Vector2f(128.0f,128.0f));
-    square.setFillColor(sf::Color(0, 0, 255, 192));
-
     turn = true;
     enpassant = -1;
     selected_x = -1;
@@ -51,64 +45,8 @@ void Game::reset_possible() {
             possible[i][j] = 0;
 }
 
-void Game::draw_possible(sf::RenderTarget& window, int x, int y) {
-    circle.setPosition(sf::Vector2f( 128.f * y + 32.f, 128.f * x + 32.f));
-    window.draw(circle);
-}
-
-void Game::draw_selected(sf::RenderTarget& window, int x, int y) {
-    square.setPosition(sf::Vector2f( 128.f * y, 128.f * x));
-    window.draw(square);
-}
-
 void Game::draw(sf::RenderTarget& window) {
-    board.draw(window);
-    draw_selected(window, selected_x, selected_y);
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            switch ( position[i][j] ) {
-                case 'K':
-                    king.draw(window, true, j + 65, 8 - i);
-                    break;
-                case 'Q':
-                    queen.draw(window, true, j + 65, 8 - i);
-                    break;
-                case 'R':
-                    rook.draw(window, true, j + 65, 8 - i);
-                    break;
-                case 'B':
-                    bishop.draw(window, true, j + 65, 8 - i);
-                    break;
-                case 'N':
-                    knight.draw(window, true, j + 65, 8 - i);
-                    break;
-                case 'P':
-                    pawn.draw(window, true, j + 65, 8 - i);
-                    break;
-                case 'k':
-                    king.draw(window, false, j + 65, 8 - i);
-                    break;
-                case 'q':
-                    queen.draw(window, false, j + 65, 8 - i);
-                    break;
-                case 'r':
-                    rook.draw(window, false, j + 65, 8 - i);
-                    break;
-                case 'b':
-                    bishop.draw(window, false, j + 65, 8 - i);
-                    break;
-                case 'n':
-                    knight.draw(window, false, j + 65, 8 - i);
-                    break;
-                case 'p':
-                    pawn.draw(window, false, j + 65, 8 - i);
-                    break;
-            }
-
-            if(possible[i][j])
-                draw_possible(window, i, j);
-        }
-    }
+    board.draw(window, position, possible, selected_x, selected_y);
 }
 
 void Game::move(int x, int y){
@@ -141,6 +79,7 @@ void Game::calc_moves() {
     calc_bishop();
     calc_rook();
     calc_queen();
+    calc_king();
 }
 
 void Game::calc_pawn() {
@@ -467,12 +406,12 @@ void Game::calc_queen() {
         for(int i = 1; x - i >= 0 && y + i < 8; i++) {
             if(position[x - i][y + i] == ' ')
                 possible[x - i][y + i] = 1;
-            else if((position[x][y] == 'Q' && islower(position[x - i][y + i])) || 
+            else if((position[x][y] == 'Q' && islower(position[x - i][y + i])) ||
                     (position[x][y] == 'q' && isupper(position[x - i][y + i]))) {
                 possible[x - i][y + i] = 1;
                 break;
             }
-            else if((position[x][y] == 'Q' && isupper(position[x - i][y + i])) || 
+            else if((position[x][y] == 'Q' && isupper(position[x - i][y + i])) ||
                     (position[x][y] == 'q' && islower(position[x - i][y + i]))) {
                 break;
             }
@@ -490,6 +429,69 @@ void Game::calc_queen() {
                     (position[x][y] == 'q' && islower(position[x - i][y - i]))) {
                 break;
             }
+        }
+    }
+}
+
+void Game::calc_king() {
+    int x = selected_x;
+    int y = selected_y;
+    if(position[x][y] == 'k' || position[x][y] == 'K') {
+        // down
+        if(x < 7) {
+            if(position[x + 1][y] == ' ' ||
+                    (position[x][y] == 'K' && islower(position[x + 1][y])) ||
+                    (position[x][y] == 'k' && isupper(position[x + 1][y])))
+                possible[x + 1][y] = 1;
+        }
+        // up
+        if(x > 0) {
+            if(position[x - 1][y] == ' ' ||
+                    (position[x][y] == 'K' && islower(position[x - 1][y])) ||
+                    (position[x][y] == 'k' && isupper(position[x - 1][y])))
+                possible[x - 1][y] = 1;
+        }
+        // right
+        if(y < 7) {
+            if( position[x][y + 1] == ' ' ||
+                    (position[x][y] == 'K' && islower(position[x][y + 1])) ||
+                    (position[x][y] == 'k' && isupper(position[x][y + 1])))
+                possible[x][y + 1] = 1;
+        }
+        // left
+        if(y > 0) {
+            if(position[x][y - 1] == ' ' ||
+                    (position[x][y] == 'K' && islower(position[x][y - 1])) ||
+                    (position[x][y] == 'k' && isupper(position[x][y - 1])))
+                possible[x][y - 1] = 1;
+        }
+        // down right
+        if(x < 7 && y < 7) {
+            if((position[x + 1][y + 1] == ' ') ||
+                    (position[x][y] == 'K' && islower(position[x + 1][y + 1])) ||
+                    (position[x][y] == 'k' && isupper(position[x + 1][y + 1])))
+                possible[x + 1][y + 1] = 1;
+        }
+        // down left
+        if(x < 7 && y > 0) {
+            if(position[x + 1][y - 1] == ' ' ||
+                    (position[x][y] == 'K' && islower(position[x + 1][y - 1])) ||
+                    (position[x][y] == 'k' && isupper(position[x + 1][y - 1])))
+                possible[x + 1][y - 1] = 1;
+        }
+        // up right
+        if(x > 0 && y < 7) {
+            if(position[x - 1][y + 1] == ' ' ||
+                    (position[x][y] == 'K' && islower(position[x - 1][y + 1])) ||
+                    (position[x][y] == 'k' && isupper(position[x - 1][y + 1])))
+                possible[x - 1][y + 1] = 1;
+        }
+        // up left
+        if(x > 0 && y > 0) {
+            if(position[x - 1][y - 1] == ' ' ||
+                    (position[x][y] == 'K' && islower(position[x - 1][y - 1])) ||
+                    (position[x][y] == 'k' && isupper(position[x - 1][y - 1])))
+                possible[x - 1][y - 1] = 1;
         }
     }
 }
