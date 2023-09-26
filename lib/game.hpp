@@ -1,22 +1,35 @@
 #include <SFML/Graphics.hpp>
 #include "../lib/board.hpp"
+#include "../lib/ui.hpp"
 
 struct Game {
+    private:
     char position[8][8];
     int possible[8][8];
 
     Board board;
+    Ui ui;
 
     bool turn;
+    bool playing;
+    bool paused;
+    bool rotation;
+    bool sound;
+    bool perspective;
+    bool oo_white;
+    bool ooo_white;
+    bool oo_black;
+    bool ooo_black;
     int enpassant;
-    int selected_x;
-    int selected_y;
+    int x;
+    int y;
 
-    void reset_game();
+    void new_game();
     void reset_possible();
-
-    void update_enpassant(int x, int y);
-    void promotion(int x, int y);
+    void update_enpassant(int x1, int y1);
+    void promotion(int x1, int y1);
+    void update_castle(int x1, int y1);
+    bool check();
 
     void calc_moves();
     void calc_pawn();
@@ -28,6 +41,7 @@ struct Game {
 
     public:
     Game();
+    void show_menu();
     void move(int x, int y);
     void draw(sf::RenderTarget& window);
 };
