@@ -4,7 +4,7 @@
 using namespace sf;
 
 int main() {
-    RenderWindow window(VideoMode(1536, 1152), "zaklopachess");
+    RenderWindow window(VideoMode(1200, 900), "zaklopachess");
     window.setFramerateLimit(60);
 
     Game game;

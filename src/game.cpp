@@ -1,20 +1,14 @@
 #include "../lib/game.hpp"
+#include <cstring>
 
 Game::Game() {
-    enpassant = -1;
-    oo_white = true;
-    ooo_white = true;
-    oo_black = true;
-    ooo_black = true;
-
     x = -1;
     y = -1;
-
     reset_possible();
-    ui.update_settings(&paused, &rotation, &sound, &perspective);
     for(int i = 0; i < 8; i++)
         for(int j = 0; j < 8; j ++)
             position[i][j] = ' ';
+    ui.update_settings(&paused, &rotation, &sound, &perspective);
 }
 
 void Game::new_game() {
@@ -45,6 +39,15 @@ void Game::new_game() {
         for(int j = 0; j < 8; j++)
             position[i][j] = ' ';
 
+    reset_possible();
+
+    x = -1;
+    y = -1;
+    enpassant = -1;
+    oo_white = true;
+    ooo_white = true;
+    oo_black = true;
+    ooo_black = true;
     turn = true;
 }
 
@@ -71,8 +74,8 @@ void Game::show_menu() {
 }
 
 void Game::move(int mouse_x, int mouse_y) {
-    int x1 = (mouse_x - 64) / 128;
-    int y1 = (mouse_y - 64) / 128;
+    int x1 = (mouse_x - 50) / 100;
+    int y1 = (mouse_y - 50) / 100;
     if(x1 >= 0 && x1 < 8 && y1 >= 0 && y1 < 8 && !paused) {
         if((!turn && rotation) || (!rotation && !perspective)) {
             x1 = 7 - x1;
@@ -82,15 +85,19 @@ void Game::move(int mouse_x, int mouse_y) {
             if((turn && isupper(position[x1][y1])) || (!turn && islower(position[x1][y1]))) {
                 x = x1;
                 y = y1;
-                calc_moves();
+                calc_pawn(true);
+                calc_knight(true);
+                calc_bishop(true);
+                calc_rook(true);
+                calc_queen(true);
+                calc_king(true);
             }
         }
         else {
             if(possible[x1][y1]) {
                 update_enpassant(x1, y1);
                 update_castle(x1, y1);
-                if(sound)
-                    board.play_sound(position[x1][y1] != ' ');
+                if(sound) board.play_sound(position[x1][y1] != ' ');
                 position[x1][y1] = position[x][y];
                 position[x][y] = ' ';
                 promotion(x1, y1);
@@ -109,51 +116,45 @@ void Game::move(int mouse_x, int mouse_y) {
     }
 }
 
-void Game::calc_moves() {
-    calc_pawn();
-    calc_knight();
-    calc_bishop();
-    calc_rook();
-    calc_queen();
-    calc_king();
-}
-
-void Game::calc_pawn() {
+void Game::calc_pawn(bool ch) {
     if(position[x][y] == 'P') {
         if(!isalpha(position[x - 1][y])) {
-            possible[x - 1][y] = 1;
-            if(x == 6 && !isalpha(position[x - 2][y])) {
+            if(ch && !check(x - 1, y))
+                possible[x - 1][y] = 1;
+            if(x == 6 && !isalpha(position[x - 2][y]) && ch && !check(x - 2, y))
                 possible[x - 2][y] = 3;
-            }
         }
 
-        if(y > 0 && x == 3 && enpassant == y - 1)
+        if(y > 0 && x == 3 && enpassant == y - 1 && ch && !check(x - 1, y - 1))
             possible[x - 1][y - 1] = 2;
-        if(y < 7 && x == 3 && enpassant == y + 1)
+        if(y < 7 && x == 3 && enpassant == y + 1 && ch && !check(x - 1, y + 1))
             possible[x - 1][y + 1] = 2;
 
         if(y > 0 && islower(position[x - 1][y - 1]))
-            possible[x - 1][y - 1] = 1;
+            if((ch && !check(x - 1, y - 1)) || !ch)
+                possible[x - 1][y - 1] = 1;
         if(y < 7 && islower(position[x - 1][y + 1]))
+            if((ch && !check(x - 1, y + 1)) || !ch)
             possible[x - 1][y + 1] = 1;
     }
     else if(position[x][y] == 'p') {
         if(!isalpha(position[x + 1][y])) {
-            possible[x + 1][y] = 1;
-            possible[x + 1][y] = 1;
-            if(x == 1 && !isalpha(position[x + 2][y])) {
+            if(ch && !check(x + 1, y))
+                possible[x + 1][y] = 1;
+            if(x == 1 && !isalpha(position[x + 2][y]) && ch && !check(x + 2, y))
                 possible[x + 2][y] = 3;
-            }
         }
 
-        if(y > 0 && x == 4 && enpassant == y - 1)
+        if(y > 0 && x == 4 && enpassant == y - 1 && ch && !check(x + 1, y - 1))
             possible[x + 1][y - 1] = 2;
-        if(y < 7 && x == 4 && enpassant == y + 1)
+        if(y < 7 && x == 4 && enpassant == y + 1 && ch && !check(x + 1, y + 1))
             possible[x + 1][y + 1] = 2;
 
         if(y > 0 && isupper(position[x + 1][y - 1]))
-            possible[x + 1][y - 1] = 1;
+            if((ch && !check(x + 1, y - 1)) || !ch)
+                possible[x + 1][y - 1] = 1;
         if(y < 7 && isupper(position[x + 1][y + 1]))
+            if((ch && !check(x + 1, y + 1)) || !ch)
             possible[x + 1][y + 1] = 1;
     }
 }
@@ -178,54 +179,73 @@ void Game::update_enpassant(int x1, int y1) {
     }
 }
 
-void Game::calc_knight() {
+void Game::calc_knight(bool ch) {
     if(position[x][y] == 'N') {
         if(x < 6 && y < 7 && !isupper(position[x + 2][y + 1]))
-            possible[x + 2][y + 1] = 1;
+            if((ch && !check(x + 2, y + 1)) || !ch)
+                possible[x + 2][y + 1] = 1;
         if(x < 6 && y > 0 && !isupper(position[x + 2][y - 1]))
-            possible[x + 2][y - 1] = 1;
+            if((ch && !check(x + 2, y - 1)) || !ch)
+                possible[x + 2][y - 1] = 1;
         if(x > 1 && y < 7 && !isupper(position[x - 2][y + 1]))
-            possible[x - 2][y + 1] = 1;
+            if((ch && !check(x - 2, y + 1)) || !ch)
+                possible[x - 2][y + 1] = 1;
         if(x > 1 && y > 0 && !isupper(position[x - 2][y - 1]))
-            possible[x - 2][y - 1] = 1;
+            if((ch && !check(x - 2, y - 1)) || !ch)
+                possible[x - 2][y - 1] = 1;
         if(x < 7 && y < 6 && !isupper(position[x + 1][y + 2]))
-            possible[x + 1][y + 2] = 1;
+            if((ch && !check(x + 1, y + 2)) || !ch)
+                possible[x + 1][y + 2] = 1;
         if(x < 7 && y > 1 && !isupper(position[x + 1][y - 2]))
-            possible[x + 1][y - 2] = 1;
+            if((ch && !check(x + 1, y - 2)) || !ch)
+                possible[x + 1][y - 2] = 1;
         if(x > 0 && y < 6 && !isupper(position[x - 1][y + 2]))
-            possible[x - 1][y + 2] = 1;
+            if((ch && !check(x - 1, y + 2)) || !ch)
+                possible[x - 1][y + 2] = 1;
         if(x > 0 && y > 1 && !isupper(position[x - 1][y - 2]))
-            possible[x - 1][y - 2] = 1;
+            if((ch && !check(x - 1, y - 2)) || !ch)
+                possible[x - 1][y - 2] = 1;
     }
     else if(position[x][y] == 'n') {
         if(x < 6 && y < 7 && !islower(position[x + 2][y + 1]))
-            possible[x + 2][y + 1] = 1;
+            if((ch && !check(x + 2, y + 1)) || !ch)
+                possible[x + 2][y + 1] = 1;
         if(x < 6 && y > 0 && !islower(position[x + 2][y - 1]))
-            possible[x + 2][y - 1] = 1;
+            if((ch && !check(x + 2, y - 1)) || !ch)
+                possible[x + 2][y - 1] = 1;
         if(x > 1 && y < 7 && !islower(position[x - 2][y + 1]))
-            possible[x - 2][y + 1] = 1;
+            if((ch && !check(x - 2, y + 1)) || !ch)
+                possible[x - 2][y + 1] = 1;
         if(x > 1 && y > 0 && !islower(position[x - 2][y - 1]))
-            possible[x - 2][y - 1] = 1;
+            if((ch && !check(x - 2, y - 1)) || !ch)
+                possible[x - 2][y - 1] = 1;
         if(x < 7 && y < 6 && !islower(position[x + 1][y + 2]))
-            possible[x + 1][y + 2] = 1;
+            if((ch && !check(x + 1, y + 2)) || !ch)
+                possible[x + 1][y + 2] = 1;
         if(x < 7 && y > 1 && !islower(position[x + 1][y - 2]))
-            possible[x + 1][y - 2] = 1;
+            if((ch && !check(x + 1, y - 2)) || !ch)
+                possible[x + 1][y - 2] = 1;
         if(x > 0 && y < 6 && !islower(position[x - 1][y + 2]))
-            possible[x - 1][y + 2] = 1;
+            if((ch && !check(x - 1, y + 2)) || !ch)
+                possible[x - 1][y + 2] = 1;
         if(x > 0 && y > 1 && !islower(position[x - 1][y - 2]))
-            possible[x - 1][y - 2] = 1;
+            if((ch && !check(x - 1, y - 2)) || !ch)
+                possible[x - 1][y - 2] = 1;
     }
 }
 
-void Game::calc_bishop() {
+void Game::calc_bishop(bool ch) {
     if(position[x][y] == 'b' || position[x][y] == 'B') {
         // down right
         for(int i = 1; x + i < 8 && y + i < 8; i++) {
-            if(position[x + i][y + i] == ' ')
-                possible[x + i][y + i] = 1;
+            if(position[x + i][y + i] == ' ') {
+                if((ch && !check(x + i, y + i)) || !ch)
+                    possible[x + i][y + i] = 1;
+            }
             else if((position[x][y] == 'B' && islower(position[x + i][y + i])) || 
                     (position[x][y] == 'b' && isupper(position[x + i][y + i]))) {
-                possible[x + i][y + i] = 1;
+                if((ch && !check(x + i, y + i)) || !ch)
+                    possible[x + i][y + i] = 1;
                 break;
             }
             else if((position[x][y] == 'B' && isupper(position[x + i][y + i])) || 
@@ -235,11 +255,14 @@ void Game::calc_bishop() {
         }
         // down left
         for(int i = 1; x + i < 8 && y - i >= 0; i++) {
-            if(position[x + i][y - i] == ' ')
-                possible[x + i][y - i] = 1;
+            if(position[x + i][y - i] == ' ') {
+                if((ch && !check(x + i, y - i)) || !ch)
+                    possible[x + i][y - i] = 1;
+            }
             else if((position[x][y] == 'B' && islower(position[x + i][y - i])) || 
                     (position[x][y] == 'b' && isupper(position[x + i][y - i]))) {
-                possible[x + i][y - i] = 1;
+                if((ch && !check(x + i, y - i)) || !ch)
+                    possible[x + i][y - i] = 1;
                 break;
             }
             else if((position[x][y] == 'B' && isupper(position[x + i][y - i])) || 
@@ -249,11 +272,14 @@ void Game::calc_bishop() {
         }
         // up right
         for(int i = 1; x - i >= 0 && y + i < 8; i++) {
-            if(position[x - i][y + i] == ' ')
-                possible[x - i][y + i] = 1;
+            if(position[x - i][y + i] == ' ') {
+                if((ch && !check(x - i, y + i)) || !ch)
+                    possible[x - i][y + i] = 1;
+            }
             else if((position[x][y] == 'B' && islower(position[x - i][y + i])) || 
                     (position[x][y] == 'b' && isupper(position[x - i][y + i]))) {
-                possible[x - i][y + i] = 1;
+                if((ch && !check(x - i, y + i)) || !ch)
+                    possible[x - i][y + i] = 1;
                 break;
             }
             else if((position[x][y] == 'B' && isupper(position[x - i][y + i])) || 
@@ -263,11 +289,14 @@ void Game::calc_bishop() {
         }
         // up left
         for(int i = 1; x - i >= 0 && y - i >= 0; i++) {
-            if(position[x - i][y - i] == ' ')
-                possible[x - i][y - i] = 1;
+            if(position[x - i][y - i] == ' ') {
+                if((ch && !check(x - i, y - i)) || !ch)
+                    possible[x - i][y - i] = 1;
+            }
             else if((position[x][y] == 'B' && islower(position[x - i][y - i])) || 
                     (position[x][y] == 'b' && isupper(position[x - i][y - i]))) {
-                possible[x - i][y - i] = 1;
+                if((ch && !check(x - i, y - i)) || !ch)
+                    possible[x - i][y - i] = 1;
                 break;
             }
             else if((position[x][y] == 'B' && isupper(position[x - i][y - i])) || 
@@ -278,15 +307,18 @@ void Game::calc_bishop() {
     }
 }
 
-void Game::calc_rook() {
+void Game::calc_rook(bool ch) {
     if(position[x][y] == 'r' || position[x][y] == 'R') {
         // down
         for(int i = 1; x + i < 8; i++) {
-            if(position[x + i][y] == ' ')
-                possible[x + i][y] = 1;
+            if(position[x + i][y] == ' ') {
+                if((ch && !check(x + i, y)) || !ch)
+                    possible[x + i][y] = 1;
+            }
             else if((position[x][y] == 'R' && islower(position[x + i][y])) || 
                     (position[x][y] == 'r' && isupper(position[x + i][y]))) {
-                possible[x + i][y] = 1;
+                if((ch && !check(x + i, y)) || !ch)
+                    possible[x + i][y] = 1;
                 break;
             }
             else if((position[x][y] == 'R' && isupper(position[x + i][y])) || 
@@ -296,11 +328,14 @@ void Game::calc_rook() {
         }
         // up
         for(int i = 1; x - i >= 0; i++) {
-            if(position[x - i][y] == ' ')
-                possible[x - i][y] = 1;
+            if(position[x - i][y] == ' ') {
+                if((ch && !check(x - i, y)) || !ch)
+                    possible[x - i][y] = 1;
+            }
             else if((position[x][y] == 'R' && islower(position[x - i][y])) || 
                     (position[x][y] == 'r' && isupper(position[x - i][y]))) {
-                possible[x - i][y] = 1;
+                if((ch && !check(x - i, y)) || !ch)
+                    possible[x - i][y] = 1;
                 break;
             }
             else if((position[x][y] == 'R' && isupper(position[x - i][y])) || 
@@ -310,11 +345,14 @@ void Game::calc_rook() {
         }
         // right
         for(int i = 1; y + i < 8; i++) {
-            if(position[x][y + i] == ' ')
-                possible[x][y + i] = 1;
+            if(position[x][y + i] == ' ') {
+                if((ch && !check(x, y + i)) || !ch)
+                    possible[x][y + i] = 1;
+            }
             else if((position[x][y] == 'R' && islower(position[x][y + i])) || 
                     (position[x][y] == 'r' && isupper(position[x][y + i]))) {
-                possible[x][y + i] = 1;
+                if((ch && !check(x, y + i)) || !ch)
+                    possible[x][y + i] = 1;
                 break;
             }
             else if((position[x][y] == 'R' && isupper(position[x][y + i])) || 
@@ -324,11 +362,14 @@ void Game::calc_rook() {
         }
         // left
         for(int i = 1; y - i >= 0; i++) {
-            if(position[x][y - i] == ' ')
-                possible[x][y - i] = 1;
+            if(position[x][y - i] == ' ') {
+                if((ch && !check(x, y - i)) || !ch)
+                    possible[x][y - i] = 1;
+            }
             else if((position[x][y] == 'R' && islower(position[x][y - i])) || 
                     (position[x][y] == 'r' && isupper(position[x][y - i]))) {
-                possible[x][y - i] = 1;
+                if((ch && !check(x, y - i)) || !ch)
+                    possible[x][y - i] = 1;
                 break;
             }
             else if((position[x][y] == 'R' && isupper(position[x][y - i])) || 
@@ -339,15 +380,18 @@ void Game::calc_rook() {
     }
 }
 
-void Game::calc_queen() {
+void Game::calc_queen(bool ch) {
     if(position[x][y] == 'q' || position[x][y] == 'Q') {
         // down
         for(int i = 1; x + i < 8; i++) {
-            if(position[x + i][y] == ' ')
-                possible[x + i][y] = 1;
+            if(position[x + i][y] == ' ') {
+                if((ch && !check(x + i, y)) || !ch)
+                    possible[x + i][y] = 1;
+            }
             else if((position[x][y] == 'Q' && islower(position[x + i][y])) || 
                     (position[x][y] == 'q' && isupper(position[x + i][y]))) {
-                possible[x + i][y] = 1;
+                if((ch && !check(x + i, y)) || !ch)
+                    possible[x + i][y] = 1;
                 break;
             }
             else if((position[x][y] == 'Q' && isupper(position[x + i][y])) || 
@@ -357,11 +401,14 @@ void Game::calc_queen() {
         }
         // up
         for(int i = 1; x - i >= 0; i++) {
-            if(position[x - i][y] == ' ')
-                possible[x - i][y] = 1;
+            if(position[x - i][y] == ' ') {
+                if((ch && !check(x - i, y)) || !ch)
+                    possible[x - i][y] = 1;
+            }
             else if((position[x][y] == 'Q' && islower(position[x - i][y])) || 
                     (position[x][y] == 'q' && isupper(position[x - i][y]))) {
-                possible[x - i][y] = 1;
+                if((ch && !check(x - i, y)) || !ch)
+                    possible[x - i][y] = 1;
                 break;
             }
             else if((position[x][y] == 'Q' && isupper(position[x - i][y])) || 
@@ -371,11 +418,14 @@ void Game::calc_queen() {
         }
         // right
         for(int i = 1; y + i < 8; i++) {
-            if(position[x][y + i] == ' ')
-                possible[x][y + i] = 1;
+            if(position[x][y + i] == ' ') {
+                if((ch && !check(x, y + i)) || !ch)
+                    possible[x][y + i] = 1;
+            }
             else if((position[x][y] == 'Q' && islower(position[x][y + i])) || 
                     (position[x][y] == 'q' && isupper(position[x][y + i]))) {
-                possible[x][y + i] = 1;
+                if((ch && !check(x, y + i)) || !ch)
+                    possible[x][y + i] = 1;
                 break;
             }
             else if((position[x][y] == 'Q' && isupper(position[x][y + i])) || 
@@ -385,11 +435,14 @@ void Game::calc_queen() {
         }
         // left
         for(int i = 1; y - i >= 0; i++) {
-            if(position[x][y - i] == ' ')
-                possible[x][y - i] = 1;
+            if(position[x][y - i] == ' ') {
+                if((ch && !check(x, y - i)) || !ch)
+                    possible[x][y - i] = 1;
+            }
             else if((position[x][y] == 'Q' && islower(position[x][y - i])) || 
                     (position[x][y] == 'q' && isupper(position[x][y - i]))) {
-                possible[x][y - i] = 1;
+                if((ch && !check(x, y - i)) || !ch)
+                    possible[x][y - i] = 1;
                 break;
             }
             else if((position[x][y] == 'Q' && isupper(position[x][y - i])) || 
@@ -399,11 +452,14 @@ void Game::calc_queen() {
         }
         // down right
         for(int i = 1; x + i < 8 && y + i < 8; i++) {
-            if(position[x + i][y + i] == ' ')
-                possible[x + i][y + i] = 1;
+            if(position[x + i][y + i] == ' ') {
+                if((ch && !check(x + i, y + i)) || !ch)
+                    possible[x + i][y + i] = 1;
+            }
             else if((position[x][y] == 'Q' && islower(position[x + i][y + i])) || 
                     (position[x][y] == 'q' && isupper(position[x + i][y + i]))) {
-                possible[x + i][y + i] = 1;
+                if((ch && !check(x + i, y + i)) || !ch)
+                    possible[x + i][y + i] = 1;
                 break;
             }
             else if((position[x][y] == 'Q' && isupper(position[x + i][y + i])) || 
@@ -413,11 +469,14 @@ void Game::calc_queen() {
         }
         // down left
         for(int i = 1; x + i < 8 && y - i >= 0; i++) {
-            if(position[x + i][y - i] == ' ')
-                possible[x + i][y - i] = 1;
+            if(position[x + i][y - i] == ' ') {
+                if((ch && !check(x + i, y - i)) || !ch)
+                    possible[x + i][y - i] = 1;
+            }
             else if((position[x][y] == 'Q' && islower(position[x + i][y - i])) || 
                     (position[x][y] == 'q' && isupper(position[x + i][y - i]))) {
-                possible[x + i][y - i] = 1;
+                if((ch && !check(x + i, y - i)) || !ch)
+                    possible[x + i][y - i] = 1;
                 break;
             }
             else if((position[x][y] == 'Q' && isupper(position[x + i][y - i])) || 
@@ -427,11 +486,14 @@ void Game::calc_queen() {
         }
         // up right
         for(int i = 1; x - i >= 0 && y + i < 8; i++) {
-            if(position[x - i][y + i] == ' ')
-                possible[x - i][y + i] = 1;
+            if(position[x - i][y + i] == ' ') {
+                if((ch && !check(x - i, y + i)) || !ch)
+                    possible[x - i][y + i] = 1;
+            }
             else if((position[x][y] == 'Q' && islower(position[x - i][y + i])) ||
                     (position[x][y] == 'q' && isupper(position[x - i][y + i]))) {
-                possible[x - i][y + i] = 1;
+                if((ch && !check(x - i, y + i)) || !ch)
+                    possible[x - i][y + i] = 1;
                 break;
             }
             else if((position[x][y] == 'Q' && isupper(position[x - i][y + i])) ||
@@ -441,11 +503,14 @@ void Game::calc_queen() {
         }
         // up left
         for(int i = 1; x - i >= 0 && y - i >= 0; i++) {
-            if(position[x - i][y - i] == ' ')
-                possible[x - i][y - i] = 1;
+            if(position[x - i][y - i] == ' ') {
+                if((ch && !check(x - i, y - i)) || !ch)
+                    possible[x - i][y - i] = 1;
+            }
             else if((position[x][y] == 'Q' && islower(position[x - i][y - i])) || 
                     (position[x][y] == 'q' && isupper(position[x - i][y - i]))) {
-                possible[x - i][y - i] = 1;
+                if((ch && !check(x - i, y - i)) || !ch)
+                    possible[x - i][y - i] = 1;
                 break;
             }
             else if((position[x][y] == 'Q' && isupper(position[x - i][y - i])) || 
@@ -456,28 +521,31 @@ void Game::calc_queen() {
     }
 }
 
-void Game::calc_king() {
+void Game::calc_king(bool ch) {
     if(position[x][y] == 'k' || position[x][y] == 'K') {
         // down
         if(x < 7) {
             if(position[x + 1][y] == ' ' ||
                     (position[x][y] == 'K' && islower(position[x + 1][y])) ||
                     (position[x][y] == 'k' && isupper(position[x + 1][y])))
-                possible[x + 1][y] = 1;
+                if((ch && !check(x + 1, y)) || !ch)
+                    possible[x + 1][y] = 1;
         }
         // up
         if(x > 0) {
             if(position[x - 1][y] == ' ' ||
                     (position[x][y] == 'K' && islower(position[x - 1][y])) ||
                     (position[x][y] == 'k' && isupper(position[x - 1][y])))
-                possible[x - 1][y] = 1;
+                if((ch && !check(x - 1, y)) || !ch)
+                    possible[x - 1][y] = 1;
         }
         // right
         if(y < 7) {
             if( position[x][y + 1] == ' ' ||
                     (position[x][y] == 'K' && islower(position[x][y + 1])) ||
                     (position[x][y] == 'k' && isupper(position[x][y + 1]))) {
-                possible[x][y + 1] = 1;
+                if((ch && !check(x, y + 1)) || !ch)
+                    possible[x][y + 1] = 1;
             }
         }
         // left
@@ -485,46 +553,55 @@ void Game::calc_king() {
             if(position[x][y - 1] == ' ' ||
                     (position[x][y] == 'K' && islower(position[x][y - 1])) ||
                     (position[x][y] == 'k' && isupper(position[x][y - 1])))
-                possible[x][y - 1] = 1;
+                if((ch && !check(x, y - 1)) || !ch)
+                    possible[x][y - 1] = 1;
         }
         // down right
         if(x < 7 && y < 7) {
             if((position[x + 1][y + 1] == ' ') ||
                     (position[x][y] == 'K' && islower(position[x + 1][y + 1])) ||
                     (position[x][y] == 'k' && isupper(position[x + 1][y + 1])))
-                possible[x + 1][y + 1] = 1;
+                if((ch && !check(x + 1, y + 1)) || !ch)
+                    possible[x + 1][y + 1] = 1;
         }
         // down left
         if(x < 7 && y > 0) {
             if(position[x + 1][y - 1] == ' ' ||
                     (position[x][y] == 'K' && islower(position[x + 1][y - 1])) ||
                     (position[x][y] == 'k' && isupper(position[x + 1][y - 1])))
-                possible[x + 1][y - 1] = 1;
+                if((ch && !check(x + 1, y - 1)) || !ch)
+                    possible[x + 1][y - 1] = 1;
         }
         // up right
         if(x > 0 && y < 7) {
             if(position[x - 1][y + 1] == ' ' ||
                     (position[x][y] == 'K' && islower(position[x - 1][y + 1])) ||
                     (position[x][y] == 'k' && isupper(position[x - 1][y + 1])))
-                possible[x - 1][y + 1] = 1;
+                if((ch && !check(x - 1, y + 1)) || !ch)
+                    possible[x - 1][y + 1] = 1;
         }
         // up left
         if(x > 0 && y > 0) {
             if(position[x - 1][y - 1] == ' ' ||
                     (position[x][y] == 'K' && islower(position[x - 1][y - 1])) ||
                     (position[x][y] == 'k' && isupper(position[x - 1][y - 1])))
-                possible[x - 1][y - 1] = 1;
+                if((ch && !check(x - 1, y - 1)) || !ch)
+                    possible[x - 1][y - 1] = 1;
         }
         // castle
         if(y == 4) {
             if(position[x][y] == 'K' && position[7][5] == ' ' && position[7][6] == ' ' && oo_white)
-                possible[7][6] = 4;
+                if(ch && !check(7, 6) && !check(7, 5) && !check(7, 4))
+                    possible[7][6] = 4;
             if(position[x][y] == 'K' && position[7][3] == ' ' && position[7][2] == ' ' && position[7][1] == ' ' && ooo_white)
-                possible[7][2] = 5;
+                if(ch && !check(7, 2) && !check(7, 3) && !check(7, 4))
+                    possible[7][2] = 5;
             if(position[x][y] == 'k' && position[0][5] == ' ' && position[0][6] == ' ' && oo_black)
-                possible[0][6] = 6;
+                if(ch && !check(0, 6) && !check(0, 5) && !check(0, 4))
+                    possible[0][6] = 6;
             if(position[x][y] == 'k' && position[0][3] == ' ' && position[0][2] == ' ' && position[0][1] && ooo_black)
-                possible[0][2] = 7;
+                if(ch && !check(0, 2) && !check(0, 3) && !check(0, 4))
+                    possible[0][2] = 7;
         }
     }
 }
@@ -557,6 +634,47 @@ void Game::update_castle(int x1, int y1) {
     }
 }
 
-bool Game::check() {
+bool Game::check(int x1, int y1) {
+    int tmp_x = x;
+    int tmp_y = y;
+    char tmp_piece = position[x1][y1];
+    position[x1][y1] = position[x][y];
+    position[x][y] = ' ';
+
+    int tmp_possible[8][8];
+    std::memcpy(tmp_possible, possible, 64 * sizeof(int));
+
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            if((turn && islower(position[i][j])) || (!turn && isupper(position[i][j]))) {
+                x = i;
+                y = j;
+                reset_possible();
+                calc_pawn(false);
+                calc_knight(false);
+                calc_bishop(false);
+                calc_rook(false);
+                calc_queen(false);
+                calc_king(false);
+                for(int m = 0; m < 8; m++) {
+                    for (int n = 0; n < 8; n++) {
+                        if(possible[m][n] && ((turn && position[m][n] == 'K') || (!turn && position[m][n] == 'k'))) {
+                            x = tmp_x;
+                            y = tmp_y;
+                            position[x][y] = position[x1][y1];
+                            position[x1][y1] = tmp_piece;
+                            std::memcpy(possible, tmp_possible, 64 * sizeof(int));
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    x = tmp_x;
+    y = tmp_y;
+    position[x][y] = position[x1][y1];
+    position[x1][y1] = tmp_piece;
+    std::memcpy(possible, tmp_possible, 64 * sizeof(int));
     return false;
 }

@@ -1,6 +1,6 @@
 SRC_DIR=src
 BUILD_DIR=build
-BINARY=chess
+BINARY=zaklopachess
 
 CXX=g++
 GDB=gdb
@@ -25,6 +25,3 @@ compile:
 
 run: compile
 	./$(BINARY)
-
-
-#-include $(OBJECT_FILES:.o=.d)

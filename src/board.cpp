@@ -4,14 +4,14 @@
 
 Board::Board() {
     // board
-    white_square.setSize(Vector2f(128.f, 128.f));
+    white_square.setSize(Vector2f(100.f, 100.f));
     white_square.setFillColor(Color(0x908F8DFF));
-    black_square.setSize(Vector2f(128.f, 128.f));
+    black_square.setSize(Vector2f(100.f, 100.f));
     black_square.setFillColor(Color(0x6E6D6BFF));
     // special squares
-    possible_square.setRadius(32.f);
+    possible_square.setRadius(25.f);
     possible_square.setFillColor(Color(0x00000040));
-    selected_square.setSize(Vector2f(128.0f, 128.0f));
+    selected_square.setSize(Vector2f(100.0f, 100.0f));
     selected_square.setFillColor(Color(0x7590A1FF));
     // pawn
     if (!white_pawn.loadFromFile("assets/textures/white_pawn.png"))
@@ -52,85 +52,65 @@ Board::Board() {
 }
 
 void Board::draw_white(sf::RenderTarget& window, char position[8][8], int possible[8][8], int x, int y) {
-    selected_square.setPosition(Vector2f(128.f * y + 64.f, 128.f * x + 64.f));
+    selected_square.setPosition(Vector2f(100.f * y + 50.f, 100.f * x + 50.f));
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++) {
             if(i == x && j == y)
                 window.draw(selected_square);
             else {
                 if((i + j + 1) % 2) {
-                    white_square.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
+                    white_square.setPosition(Vector2f(j * 100.f + 50.f, i * 100.f + 50.f));
                     window.draw(white_square);
                 }
                 else {
-                    black_square.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
+                    black_square.setPosition(Vector2f(j * 100.f + 50.f, i * 100.f + 50.f));
                     window.draw(black_square);
                 }
             }
             switch (position[i][j]) {
                 case 'K':
                     piece.setTexture(white_king);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'Q':
                     piece.setTexture(white_queen);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'R':
                     piece.setTexture(white_rook);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'B':
                     piece.setTexture(white_bishop);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'N':
                     piece.setTexture(white_knight);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'P':
                     piece.setTexture(white_pawn);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'k':
                     piece.setTexture(black_king);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'q':
                     piece.setTexture(black_queen);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'r':
                     piece.setTexture(black_rook);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'b':
                     piece.setTexture(black_bishop);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'n':
                     piece.setTexture(black_knight);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'p':
                     piece.setTexture(black_pawn);
-                    piece.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
-                    window.draw(piece);
                     break;
             }
+            if(isalpha(position[i][j])) {
+                piece.setPosition(Vector2f(j * 100.f + 50.f, i * 100.f + 50.f));
+                window.draw(piece);
+            }
             if(possible[i][j]) {
-                possible_square.setPosition(Vector2f(128.f * j + 96.f, 128.f * i + 96.f));
+                possible_square.setPosition(Vector2f(100.f * j + 75.f, 100.f * i + 75.f));
                 window.draw(possible_square);
             }
         }
@@ -143,16 +123,16 @@ void Board::draw_black(sf::RenderTarget& window, char position[8][8], int possib
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
             if(i == x && j == y){
-                selected_square.setPosition(Vector2f(128.f * y + 64.f, 128.f * x + 64.f));
+                selected_square.setPosition(Vector2f(100.f * y + 50.f, 100.f * x + 50.f));
                 window.draw(selected_square);
             }
             else {
                 if((i + j + 1) % 2) {
-                    white_square.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
+                    white_square.setPosition(Vector2f(j * 100.f + 50.f, i * 100.f + 50.f));
                     window.draw(white_square);
                 }
                 else {
-                    black_square.setPosition(Vector2f(j * 128.f + 64.f, i * 128.f + 64.f));
+                    black_square.setPosition(Vector2f(j * 100.f + 50.f, i * 100.f + 50.f));
                     window.draw(black_square);
                 }
             }
@@ -165,67 +145,47 @@ void Board::draw_black(sf::RenderTarget& window, char position[8][8], int possib
             switch (position[i][j]) {
                 case 'K':
                     piece.setTexture(white_king);
-                    piece.setPosition(Vector2f(m * 128.f + 64.f, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'Q':
                     piece.setTexture(white_queen);
-                    piece.setPosition(Vector2f(m * 128 + 64, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'R':
                     piece.setTexture(white_rook);
-                    piece.setPosition(Vector2f(m * 128.f + 64.f, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'B':
                     piece.setTexture(white_bishop);
-                    piece.setPosition(Vector2f(m * 128.f + 64.f, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'N':
                     piece.setTexture(white_knight);
-                    piece.setPosition(Vector2f(m * 128.f + 64.f, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'P':
                     piece.setTexture(white_pawn);
-                    piece.setPosition(Vector2f(m * 128.f + 64.f, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'k':
                     piece.setTexture(black_king);
-                    piece.setPosition(Vector2f(m * 128.f + 64.f, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'q':
                     piece.setTexture(black_queen);
-                    piece.setPosition(Vector2f(m * 128.f + 64.f, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'r':
                     piece.setTexture(black_rook);
-                    piece.setPosition(Vector2f(m * 128.f + 64.f, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'b':
                     piece.setTexture(black_bishop);
-                    piece.setPosition(Vector2f(m * 128.f + 64.f, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'n':
                     piece.setTexture(black_knight);
-                    piece.setPosition(Vector2f(m * 128.f + 64.f, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
                 case 'p':
                     piece.setTexture(black_pawn);
-                    piece.setPosition(Vector2f(m * 128.f + 64.f, n * 128.f + 64.f));
-                    window.draw(piece);
                     break;
             }
+            if(isalpha(position[i][j])) {
+                piece.setPosition(Vector2f(m * 100.f + 50.f, n * 100.f + 50.f));
+                window.draw(piece);
+            }
             if(possible[i][j]) {
-                possible_square.setPosition(Vector2f(128.f * m + 96.f, 128.f * n + 96.f));
+                possible_square.setPosition(Vector2f(100.f * m + 75.f, 100.f * n + 75.f));
                 window.draw(possible_square);
             }
         }

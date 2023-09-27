@@ -22,8 +22,6 @@ class Board {
 
     CircleShape possible_square;
     RectangleShape selected_square;
-
-    RectangleShape squares[8][8];
     RectangleShape white_square;
     RectangleShape black_square;
 

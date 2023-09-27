@@ -29,15 +29,15 @@ struct Game {
     void update_enpassant(int x1, int y1);
     void promotion(int x1, int y1);
     void update_castle(int x1, int y1);
-    bool check();
+    void check_check();
+    bool check(int x1, int y1);
 
-    void calc_moves();
-    void calc_pawn();
-    void calc_knight();
-    void calc_bishop();
-    void calc_rook();
-    void calc_queen();
-    void calc_king();
+    void calc_pawn(bool ch);
+    void calc_knight(bool ch);
+    void calc_bishop(bool ch);
+    void calc_rook(bool ch);
+    void calc_queen(bool ch);
+    void calc_king(bool ch);
 
     public:
     Game();

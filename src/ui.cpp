@@ -12,129 +12,130 @@ Ui::Ui() {
     perspective = false;
     options_menu = false;
 
-    button_color = Color(0xF92E42FF);
-    inactive_button_color = Color(0x292E42FF);
+    button_color = Color(0x292E42FF);
+    inactive_button_color = Color(0x16161EFF);
 
     text.setFont(font);
-    text.setCharacterSize(36);
+    text.setCharacterSize(20);
     text.setStyle(sf::Text::Bold);
     text.setFillColor(Color(0xC0CAF5FF));
 
     // PAUSE
-    button_pause.setSize(Vector2f(228.f, 96.f));
+    button_pause.setSize(Vector2f(200.f, 50.f));
     button_pause.setFillColor(button_color);
-    button_pause.setPosition(Vector2f(1200.f, 900.f));
+    button_pause.setPosition(Vector2f(925.f, 750.f));
     text_pause.setFont(font);
-    text_pause.setCharacterSize(36);
+    text_pause.setCharacterSize(20);
     text_pause.setStyle(sf::Text::Bold);
     text_pause.setFillColor(Color(0xC0CAF5FF));
     text_pause.setString("PAUSE");
-    text_pause.setPosition(Vector2f(1256.f, 926.f));
+    text_pause.setPosition(Vector2f(990.f, 762.f));
 
     // NEW GAME
-    button_newgame.setSize(Vector2f(228.f, 96.f));
+    button_newgame.setSize(Vector2f(200.f, 50.f));
     button_newgame.setFillColor(button_color);
-    button_newgame.setPosition(Vector2f(1200.f, 150.f));
+    button_newgame.setPosition(Vector2f(925.f, 150.f));
     text_newgame.setFont(font);
-    text_newgame.setCharacterSize(36);
+    text_newgame.setCharacterSize(20);
     text_newgame.setStyle(sf::Text::Bold);
     text_newgame.setFillColor(Color(0xC0CAF5FF));
     text_newgame.setString("NEW GAME");
-    text_newgame.setPosition(Vector2f(1220.f, 176.f));
+    text_newgame.setPosition(Vector2f(970.f, 162.f));
 
     // OPTIONS
-    button_options.setSize(Vector2f(228.f, 96.f));
+    button_options.setSize(Vector2f(200.f, 50.f));
     button_options.setFillColor(button_color);
-    button_options.setPosition(Vector2f(1200.f, 300.f));
+    button_options.setPosition(Vector2f(925.f, 250.f));
     text_options.setFont(font);
-    text_options.setCharacterSize(36);
+    text_options.setCharacterSize(20);
     text_options.setStyle(sf::Text::Bold);
     text_options.setFillColor(Color(0xC0CAF5FF));
     text_options.setString("OPTIONS");
-    text_options.setPosition(Vector2f(1236.f, 326.f));
+    text_options.setPosition(Vector2f(980.f, 262.f));
 
     // QUIT
-    button_quit.setSize(Vector2f(228.f, 96.f));
-    button_quit.setFillColor(Color(0xf92E42FF));
-    button_quit.setPosition(Vector2f(1200.f, 450.f));
+    button_quit.setSize(Vector2f(200.f, 50.f));
+    button_quit.setFillColor(button_color);
+    button_quit.setPosition(Vector2f(925.f, 350.f));
     text_quit.setFont(font);
-    text_quit.setCharacterSize(36);
+    text_quit.setCharacterSize(20);
     text_quit.setStyle(sf::Text::Bold);
     text_quit.setFillColor(Color(0xC0CAF5FF));
     text_quit.setString("QUIT");
-    text_quit.setPosition(Vector2f(1272.f, 476.f));
+    text_quit.setPosition(Vector2f(1000.f, 362.f));
 
     // RESUME
-    button_resume.setSize(Vector2f(228.f, 96.f));
-    button_resume.setFillColor(Color(0xf92E42FF));
-    button_resume.setPosition(Vector2f(1200.f, 900.f));
+    button_resume.setSize(Vector2f(200.f, 50.f));
+    button_resume.setFillColor(button_color);
+    button_resume.setPosition(Vector2f(925.f, 750.f));
     text_resume.setFont(font);
-    text_resume.setCharacterSize(36);
+    text_resume.setCharacterSize(20);
     text_resume.setStyle(Text::Bold);
     text_resume.setFillColor(Color(0xC0CAF5FF));
     text_resume.setString("RESUME");
-    text_resume.setPosition(Vector2f(1240.f, 926.f));
+    text_resume.setPosition(Vector2f(980.f, 762.f));
 
     // ROTATION
-    button_rotation.setSize(Vector2f(228.f, 96.f));
+    button_rotation.setSize(Vector2f(200.f, 50.f));
     button_rotation.setFillColor(button_color);
-    button_rotation.setPosition(Vector2f(1200.f, 150.f));
+    button_rotation.setPosition(Vector2f(925.f, 150.f));
     label_rotation.setFont(font);
-    label_rotation.setCharacterSize(24);
+    label_rotation.setCharacterSize(16);
     label_rotation.setStyle(sf::Text::Bold);
     label_rotation.setFillColor(Color(0xC0CAF5FF));
     label_rotation.setString("ROTATION");
-    label_rotation.setPosition(Vector2f(1200.f, 120.f));
+    label_rotation.setPosition(Vector2f(925.f, 130.f));
     text_rotation.setFont(font);
-    text_rotation.setCharacterSize(36);
+    text_rotation.setCharacterSize(20);
     text_rotation.setStyle(Text::Bold);
     text_rotation.setFillColor(Color(0xC0CAF5FF));
 
     // SOUND
-    button_sound.setSize(Vector2f(228.f, 96.f));
+    button_sound.setSize(Vector2f(200.f, 50.f));
     button_sound.setFillColor(button_color);
-    button_sound.setPosition(Vector2f(1200.f, 300.f));
+    button_sound.setPosition(Vector2f(925.f, 250.f));
     label_sound.setFont(font);
-    label_sound.setCharacterSize(24);
+    label_sound.setCharacterSize(16);
     label_sound.setStyle(sf::Text::Bold);
     label_sound.setFillColor(Color(0xC0CAF5FF));
     label_sound.setString("SOUND");
-    label_sound.setPosition(Vector2f(1200.f, 270.f));
+    label_sound.setPosition(Vector2f(925.f, 230.f));
     text_sound.setFont(font);
-    text_sound.setCharacterSize(36);
+    text_sound.setCharacterSize(20);
     text_sound.setStyle(Text::Bold);
     text_sound.setFillColor(Color(0xC0CAF5FF));
 
     // PERSPECTIVE
-    button_perspective.setSize(Vector2f(228.f, 96.f));
-    button_perspective.setFillColor(Color(0xf92E42FF));
-    button_perspective.setPosition(Vector2f(1200.f, 450.f));
+    button_perspective.setSize(Vector2f(200.f, 50.f));
+    button_perspective.setFillColor(inactive_button_color);
+    button_perspective.setPosition(Vector2f(925.f, 350.f));
     label_perspective.setFont(font);
-    label_perspective.setCharacterSize(24);
+    label_perspective.setCharacterSize(16);
     label_perspective.setStyle(sf::Text::Bold);
     label_perspective.setFillColor(Color(0xC0CAF5FF));
     label_perspective.setString("PERSPECTIVE");
-    label_perspective.setPosition(Vector2f(1200.f, 420.f));
+    label_perspective.setPosition(Vector2f(925.f, 330.f));
     text_perspective.setFont(font);
-    text_perspective.setCharacterSize(36);
+    text_perspective.setCharacterSize(20);
     text_perspective.setStyle(Text::Bold);
     text_perspective.setFillColor(Color(0xC0CAF5FF));
+    text_perspective.setPosition(Vector2f(990.f, 362.f));
 
     // OK
-    button_ok.setSize(Vector2f(228.f, 96.f));
-    button_ok.setFillColor(Color(0xf92E42FF));
-    button_ok.setPosition(Vector2f(1200.f, 900.f));
+    button_ok.setSize(Vector2f(200.f, 50.f));
+    button_ok.setFillColor(button_color);
+    button_ok.setPosition(Vector2f(925.f, 750.f));
     text_ok.setFont(font);
-    text_ok.setCharacterSize(36);
+    text_ok.setCharacterSize(20);
     text_ok.setStyle(Text::Bold);
     text_ok.setFillColor(Color(0xC0CAF5FF));
     text_ok.setString("OK");
-    text_ok.setPosition(Vector2f(1290.f, 926.f));
+    text_ok.setPosition(Vector2f(1010.f, 762.f));
 
     // DIM BOARD
-    pause.setSize(Vector2f(1024.f, 1024.f));
-    pause.setFillColor(Color(0x00408080));
-    pause.setPosition(Vector2f(64.f, 64.f));
+    pause.setSize(Vector2f(800.f, 800.f));
+    pause.setFillColor(Color(0x00404080));
+    pause.setPosition(Vector2f(50.f, 50.f));
 
     update_rotation();
     update_sound();
@@ -151,11 +152,11 @@ void Ui::update_settings(bool *paused_game, bool *rotation_game, bool *sound_gam
 void Ui::draw_coordinate(RenderTarget& window) {
     for(int i = 1; i < 9; i++) {
         text.setString(std::to_string(i));
-        text.setPosition(Vector2f(24.f, (9 - i) * 128.f - 16.f));
+        text.setPosition(Vector2f(20.f, (9 - i) * 100.f - 10.f));
         window.draw(text);
         std::string letter(1, i + 64);
         text.setString(letter);
-        text.setPosition(Vector2f(i * 128.f - 12.f, 1096.f));
+        text.setPosition(Vector2f(i * 100.f - 5.f, 860.f));
         window.draw(text);
     }
 }
@@ -163,11 +164,11 @@ void Ui::draw_coordinate(RenderTarget& window) {
 void Ui::draw_rotated_coordinate(RenderTarget& window) {
     for(int i = 1; i < 9; i++) {
         text.setString(std::to_string(i));
-        text.setPosition(Vector2f(24.f, i * 128.f - 16.f));
+        text.setPosition(Vector2f(20.f, i * 100.f - 10.f));
         window.draw(text);
         std::string letter(1, 73 - i);
         text.setString(letter);
-        text.setPosition(Vector2f(i * 128.f - 12.f, 1096.f));
+        text.setPosition(Vector2f(i * 100.f - 5.f, 860.f));
         window.draw(text);
     }
 }
@@ -278,12 +279,12 @@ void Ui::update_rotation() {
     rotation = !rotation;
     if(rotation) {
         text_rotation.setString("ON");
-        text_rotation.setPosition(Vector2f(1286.f, 176.f));
+        text_rotation.setPosition(Vector2f(1010.f, 162.f));
         button_perspective.setFillColor(inactive_button_color);
     }
     else {
         text_rotation.setString("OFF");
-        text_rotation.setPosition(Vector2f(1280.f, 176.f));
+        text_rotation.setPosition(Vector2f(1005.f, 162.f));
         button_perspective.setFillColor(button_color);
     }
 
@@ -293,24 +294,20 @@ void Ui::update_sound() {
     sound = !sound;
     if(sound) {
         text_sound.setString("ON");
-        text_sound.setPosition(Vector2f(1286.f, 326.f));
+        text_sound.setPosition(Vector2f(1010.f, 262.f));
     }
     else {
         text_sound.setString("OFF");
-        text_sound.setPosition(Vector2f(1280.f, 326.f));
+        text_sound.setPosition(Vector2f(1005.f, 262.f));
     }
 }
 
 void Ui::update_perspective() {
     perspective = !perspective;
-    if(perspective) {
+    if(perspective)
         text_perspective.setString("WHITE");
-        text_perspective.setPosition(Vector2f(1256.f, 476.f));
-    }
-    else {
+    else
         text_perspective.setString("BLACK");
-        text_perspective.setPosition(Vector2f(1256.f, 476.f));
-    }
 }
 
 void Ui::show_menu() {
