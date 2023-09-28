@@ -611,10 +611,18 @@ void Game::update_castle(int x1, int y1) {
         oo_white = false;
     if(position[7][0] != 'R')
         ooo_white = false;
+    if(position[7][4] != 'K') {
+        oo_white = false;
+        ooo_white = false;
+    }
     if(position[0][7] != 'r')
         oo_black = false;
     if(position[0][0] != 'r')
         ooo_black = false;
+    if(position[0][4] != 'k') {
+        oo_black = false;
+        ooo_black = false;
+    }
 
     if(possible[x1][y1] == 4) {
         position[7][5] = position[7][7];
