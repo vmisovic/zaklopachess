@@ -1,6 +1,6 @@
 SRC_DIR=src
 BUILD_DIR=build
-BINARY=zaklopachess
+BINARY=build/zaklopachess
 
 CXX=g++
 GDB=gdb

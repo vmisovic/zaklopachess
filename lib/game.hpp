@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <cstring>
 #include "../lib/board.hpp"
 #include "../lib/ui.hpp"
 

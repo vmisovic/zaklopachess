@@ -4,8 +4,9 @@
 using namespace sf;
 
 int main() {
-    RenderWindow window(VideoMode(1200, 900), "zaklopachess");
+    RenderWindow window(VideoMode(1200, 900), "zaklopachess", Style::Close);
     window.setFramerateLimit(60);
+    window.setSize(sf::Vector2u(1200, 900));
 
     Game game;
     while (window.isOpen())
@@ -21,13 +22,10 @@ int main() {
 
             if(event.type == Event::MouseButtonPressed){
                 if(event.mouseButton.button == Mouse::Left) {
-                    game.move(event.mouseButton.y, event.mouseButton.x);
+                    game.move(event.mouseButton.y * 900 / window.getSize().y, event.mouseButton.x * 1200 / window.getSize().x);
                 }
             }
         }
-
-        window.clear();
-        window.clear(Color(0x1A1B26FF));
         game.draw(window);
         window.display();
     }

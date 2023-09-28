@@ -1,5 +1,4 @@
 #include "../lib/game.hpp"
-#include <cstring>
 
 Game::Game() {
     x = -1;
@@ -58,6 +57,7 @@ void Game::reset_possible() {
 }
 
 void Game::draw(sf::RenderTarget& window) {
+    window.clear(Color(0x1A1B26FF));
     if((turn && rotation) || (!rotation && perspective)) {
         board.draw_white(window, position, possible, x, y);
         ui.draw(window, true);
