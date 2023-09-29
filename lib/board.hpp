@@ -32,7 +32,6 @@ class Board {
 
     public:
     Board();
-    void draw_white(RenderTarget& window, char position[8][8], int possible[8][8], int selected_x, int selected_y);
-    void draw_black(RenderTarget& window, char position[8][8], int possible[8][8], int selected_x, int selected_y);
-    void play_sound(bool capture);
+    void draw(RenderTarget& window, char position[8][8], int possible[8][8], int x, int y, bool side);
+    void play_sound(bool capture, bool sound);
 };

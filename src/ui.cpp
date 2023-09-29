@@ -132,6 +132,12 @@ Ui::Ui() {
     text_ok.setString("OK");
     text_ok.setPosition(Vector2f(1010.f, 762.f));
 
+    // WINNER
+    winner.setFont(font);
+    winner.setCharacterSize(40);
+    winner.setStyle(sf::Text::Bold);
+    winner.setFillColor(Color(0xC0CAF5FF));
+
     // DIM BOARD
     pause.setSize(Vector2f(800.f, 800.f));
     pause.setFillColor(Color(0x00404080));
@@ -191,20 +197,29 @@ void Ui::draw(RenderTarget& window, bool rotation) {
 void Ui::menu(RenderTarget& window) {
     window.draw(pause);
     if(options_menu) {
+        // ROTATION
         window.draw(label_rotation);
         window.draw(button_rotation);
         window.draw(text_rotation);
 
+        // SOUND
         window.draw(label_sound);
         window.draw(button_sound);
         window.draw(text_sound);
 
+        // PERSPECTIVE
         window.draw(label_perspective);
         window.draw(button_perspective);
         window.draw(text_perspective);
 
+        // OK
         window.draw(button_ok);
         window.draw(text_ok);
+
+        // WINNER
+        if(!playing) {
+            window.draw(winner);
+        }
     }
     else {
         // NEW GAME
@@ -223,6 +238,11 @@ void Ui::menu(RenderTarget& window) {
         if(paused) {
             window.draw(button_resume);
             window.draw(text_resume);
+        }
+
+        // WINNER
+        if(!playing) {
+            window.draw(winner);
         }
     }
 }
@@ -322,4 +342,19 @@ bool Ui::start_game() {
         return true;
     }
     return false;
+}
+
+void Ui::end_game(bool check, bool turn) {
+    playing = false;
+    if(check) {
+        if(turn)
+            winner.setString("CHECKMATE BLACK WON");
+        else
+            winner.setString("CHECKMATE WHITE WON");
+        winner.setPosition(Vector2f(215.f, 422.f));
+    }
+    else {
+        winner.setString("STALEMATE DRAW");
+        winner.setPosition(Vector2f(275.f, 422.f));
+    }
 }

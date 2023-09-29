@@ -58,17 +58,12 @@ void Game::reset_possible() {
 
 void Game::draw(sf::RenderTarget& window) {
     window.clear(Color(0x1A1B26FF));
-    if((turn && rotation) || (!rotation && perspective)) {
-        board.draw_white(window, position, possible, x, y);
-        ui.draw(window, true);
-    }
-    else {
-        board.draw_black(window, position, possible, x, y);
-        ui.draw(window, false);
-    }
+    bool side = (turn && rotation) || (!rotation && perspective);
+    board.draw(window, position, possible, x, y, side);
+    ui.draw(window, side);
 }
 
-void Game::show_menu() {
+void Game::menu() {
     paused = true;
     ui.show_menu();
 }
@@ -85,23 +80,24 @@ void Game::move(int mouse_x, int mouse_y) {
             if((turn && isupper(position[x1][y1])) || (!turn && islower(position[x1][y1]))) {
                 x = x1;
                 y = y1;
-                calc_pawn(true);
-                calc_knight(true);
-                calc_bishop(true);
-                calc_rook(true);
-                calc_queen(true);
-                calc_king(true);
+                pawn(true);
+                knight(true);
+                bishop(true);
+                rook(true);
+                queen(true);
+                king(true);
             }
         }
         else {
             if(possible[x1][y1]) {
                 update_enpassant(x1, y1);
-                update_castle(x1, y1);
-                if(sound) board.play_sound(position[x1][y1] != ' ');
+                castle(x1, y1);
+                board.play_sound(position[x1][y1] != ' ', sound);
                 position[x1][y1] = position[x][y];
                 position[x][y] = ' ';
                 promotion(x1, y1);
                 turn = !turn;
+                mate();
             }
             x = -1;
             y = -1;
@@ -116,7 +112,7 @@ void Game::move(int mouse_x, int mouse_y) {
     }
 }
 
-void Game::calc_pawn(bool ch) {
+void Game::pawn(bool ch) {
     if(position[x][y] == 'P') {
         if(!isalpha(position[x - 1][y])) {
             if(ch && !check(x - 1, y))
@@ -135,7 +131,7 @@ void Game::calc_pawn(bool ch) {
                 possible[x - 1][y - 1] = 1;
         if(y < 7 && islower(position[x - 1][y + 1]))
             if((ch && !check(x - 1, y + 1)) || !ch)
-            possible[x - 1][y + 1] = 1;
+                possible[x - 1][y + 1] = 1;
     }
     else if(position[x][y] == 'p') {
         if(!isalpha(position[x + 1][y])) {
@@ -155,7 +151,7 @@ void Game::calc_pawn(bool ch) {
                 possible[x + 1][y - 1] = 1;
         if(y < 7 && isupper(position[x + 1][y + 1]))
             if((ch && !check(x + 1, y + 1)) || !ch)
-            possible[x + 1][y + 1] = 1;
+                possible[x + 1][y + 1] = 1;
     }
 }
 
@@ -179,7 +175,7 @@ void Game::update_enpassant(int x1, int y1) {
     }
 }
 
-void Game::calc_knight(bool ch) {
+void Game::knight(bool ch) {
     if(position[x][y] == 'N') {
         if(x < 6 && y < 7 && !isupper(position[x + 2][y + 1]))
             if((ch && !check(x + 2, y + 1)) || !ch)
@@ -234,7 +230,7 @@ void Game::calc_knight(bool ch) {
     }
 }
 
-void Game::calc_bishop(bool ch) {
+void Game::bishop(bool ch) {
     if(position[x][y] == 'b' || position[x][y] == 'B') {
         // down right
         for(int i = 1; x + i < 8 && y + i < 8; i++) {
@@ -307,7 +303,7 @@ void Game::calc_bishop(bool ch) {
     }
 }
 
-void Game::calc_rook(bool ch) {
+void Game::rook(bool ch) {
     if(position[x][y] == 'r' || position[x][y] == 'R') {
         // down
         for(int i = 1; x + i < 8; i++) {
@@ -380,7 +376,7 @@ void Game::calc_rook(bool ch) {
     }
 }
 
-void Game::calc_queen(bool ch) {
+void Game::queen(bool ch) {
     if(position[x][y] == 'q' || position[x][y] == 'Q') {
         // down
         for(int i = 1; x + i < 8; i++) {
@@ -521,7 +517,7 @@ void Game::calc_queen(bool ch) {
     }
 }
 
-void Game::calc_king(bool ch) {
+void Game::king(bool ch) {
     if(position[x][y] == 'k' || position[x][y] == 'K') {
         // down
         if(x < 7) {
@@ -606,7 +602,7 @@ void Game::calc_king(bool ch) {
     }
 }
 
-void Game::update_castle(int x1, int y1) {
+void Game::castle(int x1, int y1) {
     if(position[7][7] != 'R')
         oo_white = false;
     if(position[7][0] != 'R')
@@ -658,12 +654,12 @@ bool Game::check(int x1, int y1) {
                 x = i;
                 y = j;
                 reset_possible();
-                calc_pawn(false);
-                calc_knight(false);
-                calc_bishop(false);
-                calc_rook(false);
-                calc_queen(false);
-                calc_king(false);
+                pawn(false);
+                knight(false);
+                bishop(false);
+                rook(false);
+                queen(false);
+                king(false);
                 for(int m = 0; m < 8; m++) {
                     for (int n = 0; n < 8; n++) {
                         if(possible[m][n] && ((turn && position[m][n] == 'K') || (!turn && position[m][n] == 'k'))) {
@@ -685,4 +681,36 @@ bool Game::check(int x1, int y1) {
     position[x1][y1] = tmp_piece;
     std::memcpy(possible, tmp_possible, 64 * sizeof(int));
     return false;
+}
+
+bool Game::end() {
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            if((turn && isupper(position[i][j])) || (!turn && islower(position[i][j]))) {
+                x = i;
+                y = j;
+                reset_possible();
+                pawn(true);
+                knight(true);
+                bishop(true);
+                rook(true);
+                queen(true);
+                king(true);
+                for(int m = 0; m < 8; m++) {
+                    for (int n = 0; n < 8; n++) {
+                        if(possible[m][n]) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+
+void Game::mate() {
+    if(end()) {
+        ui.end_game(check(-1, -1), turn);
+    }
 }

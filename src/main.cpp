@@ -6,7 +6,6 @@ using namespace sf;
 int main() {
     RenderWindow window(VideoMode(1200, 900), "zaklopachess", Style::Close);
     window.setFramerateLimit(60);
-    window.setSize(sf::Vector2u(1200, 900));
 
     Game game;
     while (window.isOpen())
@@ -18,7 +17,7 @@ int main() {
                 window.close();
 
             if (Keyboard::isKeyPressed(Keyboard::Escape))
-                game.show_menu();
+                game.menu();
 
             if(event.type == Event::MouseButtonPressed){
                 if(event.mouseButton.button == Mouse::Left) {

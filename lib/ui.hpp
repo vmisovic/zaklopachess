@@ -36,6 +36,7 @@ struct Ui {
     RectangleShape button_perspective;
     RectangleShape button_ok;
 
+    Text winner;
     RectangleShape pause;
 
     bool sound;
@@ -60,5 +61,6 @@ struct Ui {
     void update_settings(bool *paused, bool *rotation, bool *sound, bool *perspective);
     void input(int mouse_x, int mouse_y);
     bool start_game();
+    void end_game(bool check, bool turn);
     void show_menu();
 };

@@ -24,25 +24,27 @@ struct Game {
     int enpassant;
     int x;
     int y;
+    int moves;
 
     void new_game();
     void reset_possible();
     void update_enpassant(int x1, int y1);
     void promotion(int x1, int y1);
-    void update_castle(int x1, int y1);
-    void check_check();
+    void castle(int x1, int y1);
     bool check(int x1, int y1);
+    bool end();
+    void mate();
 
-    void calc_pawn(bool ch);
-    void calc_knight(bool ch);
-    void calc_bishop(bool ch);
-    void calc_rook(bool ch);
-    void calc_queen(bool ch);
-    void calc_king(bool ch);
+    void pawn(bool ch);
+    void knight(bool ch);
+    void bishop(bool ch);
+    void rook(bool ch);
+    void queen(bool ch);
+    void king(bool ch);
 
     public:
     Game();
-    void show_menu();
+    void menu();
     void move(int x, int y);
     void draw(sf::RenderTarget& window);
 };

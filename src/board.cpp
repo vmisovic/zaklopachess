@@ -51,88 +51,25 @@ Board::Board() {
         std::cout << "Failed to open capture.flac" << std::endl;
 }
 
-void Board::draw_white(sf::RenderTarget& window, char position[8][8], int possible[8][8], int x, int y) {
-    selected_square.setPosition(Vector2f(100.f * y + 50.f, 100.f * x + 50.f));
-    for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 8; j++) {
-            if(i == x && j == y)
-                window.draw(selected_square);
-            else {
-                if((i + j + 1) % 2) {
-                    white_square.setPosition(Vector2f(j * 100.f + 50.f, i * 100.f + 50.f));
-                    window.draw(white_square);
-                }
-                else {
-                    black_square.setPosition(Vector2f(j * 100.f + 50.f, i * 100.f + 50.f));
-                    window.draw(black_square);
-                }
-            }
-            switch (position[i][j]) {
-                case 'K':
-                    piece.setTexture(white_king);
-                    break;
-                case 'Q':
-                    piece.setTexture(white_queen);
-                    break;
-                case 'R':
-                    piece.setTexture(white_rook);
-                    break;
-                case 'B':
-                    piece.setTexture(white_bishop);
-                    break;
-                case 'N':
-                    piece.setTexture(white_knight);
-                    break;
-                case 'P':
-                    piece.setTexture(white_pawn);
-                    break;
-                case 'k':
-                    piece.setTexture(black_king);
-                    break;
-                case 'q':
-                    piece.setTexture(black_queen);
-                    break;
-                case 'r':
-                    piece.setTexture(black_rook);
-                    break;
-                case 'b':
-                    piece.setTexture(black_bishop);
-                    break;
-                case 'n':
-                    piece.setTexture(black_knight);
-                    break;
-                case 'p':
-                    piece.setTexture(black_pawn);
-                    break;
-            }
-            if(isalpha(position[i][j])) {
-                piece.setPosition(Vector2f(j * 100.f + 50.f, i * 100.f + 50.f));
-                window.draw(piece);
-            }
-            if(possible[i][j]) {
-                possible_square.setPosition(Vector2f(100.f * j + 75.f, 100.f * i + 75.f));
-                window.draw(possible_square);
-            }
-        }
+void Board::draw(sf::RenderTarget& window, char position[8][8], int possible[8][8], int x, int y, bool side) {
+    int m, n;
+    if(!side) {
+        x = 7 - x;
+        y = 7 - y;
     }
-}
-
-void Board::draw_black(sf::RenderTarget& window, char position[8][8], int possible[8][8], int x, int y) {
-    x = 7 - x;
-    y = 7 - y;
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
-            if(i == x && j == y){
-                selected_square.setPosition(Vector2f(100.f * y + 50.f, 100.f * x + 50.f));
+            if(i == x && j == y) {
+                selected_square.setPosition(Vector2f(100.f * j + 50.f, 100.f * i + 50.f));
                 window.draw(selected_square);
             }
             else {
                 if((i + j + 1) % 2) {
-                    white_square.setPosition(Vector2f(j * 100.f + 50.f, i * 100.f + 50.f));
+                    white_square.setPosition(Vector2f(100.f * j + 50.f, 100.f * i + 50.f));
                     window.draw(white_square);
                 }
                 else {
-                    black_square.setPosition(Vector2f(j * 100.f + 50.f, i * 100.f + 50.f));
+                    black_square.setPosition(Vector2f(100.f * j + 50.f, 100.f * i + 50.f));
                     window.draw(black_square);
                 }
             }
@@ -140,8 +77,14 @@ void Board::draw_black(sf::RenderTarget& window, char position[8][8], int possib
     }
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
-            int m = 7 - j;
-            int n = 7 - i;
+            if(side) {
+                m = j;
+                n = i;
+            }
+            else {
+                m = 7 - j;
+                n = 7 - i;
+            }
             switch (position[i][j]) {
                 case 'K':
                     piece.setTexture(white_king);
@@ -192,10 +135,12 @@ void Board::draw_black(sf::RenderTarget& window, char position[8][8], int possib
     }
 }
 
-void Board::play_sound(bool c) {
-    if (c)
-        sound.setBuffer(capture);
-    else
-        sound.setBuffer(move);
-    sound.play();
+void Board::play_sound(bool c, bool s) {
+    if(s) {
+        if (c)
+            sound.setBuffer(capture);
+        else
+            sound.setBuffer(move);
+        sound.play();
+    }
 }
