@@ -10,6 +10,7 @@ Ui::Ui() {
     rotation = false;
     sound = false;
     perspective = false;
+    coordinate = false;
     options_menu = false;
 
     button_color = Color(0x292E42FF);
@@ -93,13 +94,13 @@ Ui::Ui() {
     // SOUND
     button_sound.setSize(Vector2f(200.f, 50.f));
     button_sound.setFillColor(button_color);
-    button_sound.setPosition(Vector2f(925.f, 250.f));
+    button_sound.setPosition(Vector2f(925.f, 350.f));
     label_sound.setFont(font);
     label_sound.setCharacterSize(16);
     label_sound.setStyle(sf::Text::Bold);
     label_sound.setFillColor(Color(0xC0CAF5FF));
     label_sound.setString("SOUND");
-    label_sound.setPosition(Vector2f(925.f, 230.f));
+    label_sound.setPosition(Vector2f(925.f, 330.f));
     text_sound.setFont(font);
     text_sound.setCharacterSize(20);
     text_sound.setStyle(Text::Bold);
@@ -108,18 +109,33 @@ Ui::Ui() {
     // PERSPECTIVE
     button_perspective.setSize(Vector2f(200.f, 50.f));
     button_perspective.setFillColor(inactive_button_color);
-    button_perspective.setPosition(Vector2f(925.f, 350.f));
+    button_perspective.setPosition(Vector2f(925.f, 250.f));
     label_perspective.setFont(font);
     label_perspective.setCharacterSize(16);
     label_perspective.setStyle(sf::Text::Bold);
     label_perspective.setFillColor(Color(0xC0CAF5FF));
     label_perspective.setString("PERSPECTIVE");
-    label_perspective.setPosition(Vector2f(925.f, 330.f));
+    label_perspective.setPosition(Vector2f(925.f, 230.f));
     text_perspective.setFont(font);
     text_perspective.setCharacterSize(20);
     text_perspective.setStyle(Text::Bold);
     text_perspective.setFillColor(Color(0xC0CAF5FF));
-    text_perspective.setPosition(Vector2f(990.f, 362.f));
+    text_perspective.setPosition(Vector2f(990.f, 262.f));
+
+    // COORDINATE
+    button_coordinate.setSize(Vector2f(200.f, 50.f));
+    button_coordinate.setFillColor(button_color);
+    button_coordinate.setPosition(Vector2f(925.f, 450.f));
+    label_coordinate.setFont(font);
+    label_coordinate.setCharacterSize(16);
+    label_coordinate.setStyle(sf::Text::Bold);
+    label_coordinate.setFillColor(Color(0xC0CAF5FF));
+    label_coordinate.setString("COORDINATE");
+    label_coordinate.setPosition(Vector2f(925.f, 430.f));
+    text_coordinate.setFont(font);
+    text_coordinate.setCharacterSize(20);
+    text_coordinate.setStyle(Text::Bold);
+    text_coordinate.setFillColor(Color(0xC0CAF5FF));
 
     // OK
     button_ok.setSize(Vector2f(200.f, 50.f));
@@ -146,6 +162,7 @@ Ui::Ui() {
     update_rotation();
     update_sound();
     update_perspective();
+    update_coordinate();
 }
 
 void Ui::update_settings(bool *paused_game, bool *rotation_game, bool *sound_game, bool *perspective_game) {
@@ -156,15 +173,15 @@ void Ui::update_settings(bool *paused_game, bool *rotation_game, bool *sound_gam
 }
 
 void Ui::draw_coordinate(RenderTarget& window) {
-    for(int i = 1; i < 9; i++) {
-        text.setString(std::to_string(i));
-        text.setPosition(Vector2f(20.f, (9 - i) * 100.f - 10.f));
-        window.draw(text);
-        std::string letter(1, i + 64);
-        text.setString(letter);
-        text.setPosition(Vector2f(i * 100.f - 5.f, 860.f));
-        window.draw(text);
-    }
+        for(int i = 1; i < 9; i++) {
+            text.setString(std::to_string(i));
+            text.setPosition(Vector2f(20.f, (9 - i) * 100.f - 10.f));
+            window.draw(text);
+            std::string letter(1, i + 64);
+            text.setString(letter);
+            text.setPosition(Vector2f(i * 100.f - 5.f, 860.f));
+            window.draw(text);
+        }
 }
 
 void Ui::draw_rotated_coordinate(RenderTarget& window) {
@@ -180,11 +197,12 @@ void Ui::draw_rotated_coordinate(RenderTarget& window) {
 }
 
 void Ui::draw(RenderTarget& window, bool rotation) {
-    if(rotation)
-        draw_coordinate(window);
-    else
-        draw_rotated_coordinate(window);
-
+    if(coordinate) {
+        if(rotation)
+            draw_coordinate(window);
+        else
+            draw_rotated_coordinate(window);
+    }
     if(!playing || paused) {
         menu(window);
     }
@@ -211,6 +229,11 @@ void Ui::menu(RenderTarget& window) {
         window.draw(label_perspective);
         window.draw(button_perspective);
         window.draw(text_perspective);
+
+        // COORDINATE
+        window.draw(label_coordinate);
+        window.draw(button_coordinate);
+        window.draw(text_coordinate);
 
         // OK
         window.draw(button_ok);
@@ -261,6 +284,10 @@ void Ui::input(int mouse_x, int mouse_y) {
             else if(button_perspective.getPosition().x < mouse_x && mouse_x < button_perspective.getPosition().x + button_perspective.getSize().x &&
                     button_perspective.getPosition().y < mouse_y && mouse_y < button_perspective.getPosition().y + button_perspective.getSize().y) {
                 update_perspective();
+            }
+            else if(button_coordinate.getPosition().x < mouse_x && mouse_x < button_coordinate.getPosition().x + button_coordinate.getSize().x &&
+                    button_coordinate.getPosition().y < mouse_y && mouse_y < button_coordinate.getPosition().y + button_coordinate.getSize().y) {
+                update_coordinate();
             }
             else if(button_ok.getPosition().x < mouse_x && mouse_x < button_ok.getPosition().x + button_ok.getSize().x &&
                     button_ok.getPosition().y < mouse_y && mouse_y < button_ok.getPosition().y + button_ok.getSize().y) {
@@ -314,11 +341,11 @@ void Ui::update_sound() {
     sound = !sound;
     if(sound) {
         text_sound.setString("ON");
-        text_sound.setPosition(Vector2f(1010.f, 262.f));
+        text_sound.setPosition(Vector2f(1010.f, 362.f));
     }
     else {
         text_sound.setString("OFF");
-        text_sound.setPosition(Vector2f(1005.f, 262.f));
+        text_sound.setPosition(Vector2f(1005.f, 362.f));
     }
 }
 
@@ -328,6 +355,18 @@ void Ui::update_perspective() {
         text_perspective.setString("WHITE");
     else
         text_perspective.setString("BLACK");
+}
+
+void Ui::update_coordinate() {
+    coordinate = !coordinate;
+    if(coordinate) {
+        text_coordinate.setString("ON");
+        text_coordinate.setPosition(Vector2f(1010.f, 462.f));
+    }
+    else {
+        text_coordinate.setString("OFF");
+        text_coordinate.setPosition(Vector2f(1005.f, 462.f));
+    }
 }
 
 void Ui::show_menu() {

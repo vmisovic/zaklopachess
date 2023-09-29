@@ -27,13 +27,16 @@ struct Ui {
     Text label_rotation;
     Text label_sound;
     Text label_perspective;
+    Text label_coordinate;
     Text text_rotation;
     Text text_sound;
     Text text_perspective;
+    Text text_coordinate;
     Text text_ok;
     RectangleShape button_rotation;
     RectangleShape button_sound;
     RectangleShape button_perspective;
+    RectangleShape button_coordinate;
     RectangleShape button_ok;
 
     Text winner;
@@ -42,6 +45,7 @@ struct Ui {
     bool sound;
     bool rotation;
     bool perspective;
+    bool coordinate;
     bool playing;
     bool paused;
     bool newgame;
@@ -54,6 +58,7 @@ struct Ui {
     void update_rotation();
     void update_sound();
     void update_perspective();
+    void update_coordinate();
 
     public:
     Ui();
