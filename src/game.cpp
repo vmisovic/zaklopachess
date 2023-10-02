@@ -1,13 +1,10 @@
 #include "../lib/game.hpp"
 
 Game::Game() {
-    x = -1;
-    y = -1;
     reset_possible();
     for(int i = 0; i < 8; i++)
         for(int j = 0; j < 8; j ++)
             position[i][j] = ' ';
-    ui.update_settings(&paused, &rotation, &sound, &perspective);
 }
 
 void Game::new_game() {
@@ -57,58 +54,39 @@ void Game::reset_possible() {
 }
 
 void Game::draw(sf::RenderTarget& window) {
-    window.clear(Color(0x1A1B26FF));
-    bool side = (turn && rotation) || (!rotation && perspective);
-    board.draw(window, position, possible, x, y, side);
-    ui.draw(window, side);
-}
-
-void Game::menu() {
-    paused = true;
-    ui.show_menu();
+    ui.draw(window, position, possible, x, y, turn);
 }
 
 void Game::move(int mouse_x, int mouse_y) {
-    int x1 = (mouse_x - 50) / 100;
-    int y1 = (mouse_y - 50) / 100;
-    if(x1 >= 0 && x1 < 8 && y1 >= 0 && y1 < 8 && !paused) {
-        if((!turn && rotation) || (!rotation && !perspective)) {
-            x1 = 7 - x1;
-            y1 = 7 - y1;
-        }
-        if(x == -1 || y == -1) {
-            if((turn && isupper(position[x1][y1])) || (!turn && islower(position[x1][y1]))) {
-                x = x1;
-                y = y1;
-                pawn(true);
-                knight(true);
-                bishop(true);
-                rook(true);
-                queen(true);
-                king(true);
-            }
-        }
-        else {
-            if(possible[x1][y1]) {
-                update_enpassant(x1, y1);
-                castle(x1, y1);
-                board.play_sound(position[x1][y1] != ' ', sound);
-                position[x1][y1] = position[x][y];
-                position[x][y] = ' ';
-                promotion(x1, y1);
-                turn = !turn;
-                mate();
-            }
-            x = -1;
-            y = -1;
-            reset_possible();
+    int x1 = -1, y1 = -1;
+    ui.input(mouse_x, mouse_y, &x1, &y1, turn);
+    if(ui.start_game()) new_game();
+    if(x == -1 || y == -1) {
+        if((turn && isupper(position[x1][y1])) || (!turn && islower(position[x1][y1]))) {
+            x = x1;
+            y = y1;
+            pawn(true);
+            knight(true);
+            bishop(true);
+            rook(true);
+            queen(true);
+            king(true);
         }
     }
     else {
-        ui.input(mouse_y, mouse_x);
-        ui.update_settings(&paused, &rotation, &sound, &perspective);
-        if(ui.start_game())
-            new_game();
+        if(possible[x1][y1]) {
+            update_enpassant(x1, y1);
+            castle(x1, y1);
+            ui.play_sound(position[x1][y1] != ' ');
+            position[x1][y1] = position[x][y];
+            position[x][y] = ' ';
+            promotion(x1, y1);
+            turn = !turn;
+            ui.end_game(end(), check(-1, -1), turn);
+        }
+        x = -1;
+        y = -1;
+        reset_possible();
     }
 }
 
@@ -707,10 +685,4 @@ bool Game::end() {
         }
     }
     return true;
-}
-
-void Game::mate() {
-    if(end()) {
-        ui.end_game(check(-1, -1), turn);
-    }
 }

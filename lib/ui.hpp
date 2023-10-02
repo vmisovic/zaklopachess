@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <string>
 
@@ -50,9 +51,33 @@ struct Ui {
     bool paused;
     bool newgame;
     bool options_menu;
+    bool side;
 
-    void draw_coordinate(RenderTarget& window);
-    void draw_rotated_coordinate(RenderTarget& window);
+    Texture white_pawn;
+    Texture black_pawn;
+    Texture white_knight;
+    Texture black_knight;
+    Texture white_bishop;
+    Texture black_bishop;
+    Texture white_rook;
+    Texture black_rook;
+    Texture white_queen;
+    Texture black_queen;
+    Texture white_king;
+    Texture black_king;
+    Sprite piece;
+
+    CircleShape possible_square;
+    RectangleShape selected_square;
+    RectangleShape white_square;
+    RectangleShape black_square;
+
+    SoundBuffer move;
+    SoundBuffer capture;
+    Sound sound_effect;
+
+    void draw_coordinate(RenderTarget& window, bool side);
+    void draw_board(RenderTarget& window, char position[8][8], int possible[8][8], int x, int y);
     void menu(RenderTarget& window);
 
     void update_rotation();
@@ -62,10 +87,9 @@ struct Ui {
 
     public:
     Ui();
-    void draw(RenderTarget& window, bool rotation);
-    void update_settings(bool *paused, bool *rotation, bool *sound, bool *perspective);
-    void input(int mouse_x, int mouse_y);
+    void draw(RenderTarget& window, char position[8][8], int possible[8][8], int x, int y, bool turn);
+    void input(int mouse_x, int mouse_y, int *x, int *y, bool turn);
+    void play_sound(bool capture);
     bool start_game();
-    void end_game(bool check, bool turn);
-    void show_menu();
+    void end_game(bool end, bool check, bool turn);
 };

@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include <cstring>
-#include "../lib/board.hpp"
 #include "../lib/ui.hpp"
 
 struct Game {
@@ -8,15 +7,9 @@ struct Game {
     char position[8][8];
     int possible[8][8];
 
-    Board board;
     Ui ui;
 
     bool turn;
-    bool playing;
-    bool paused;
-    bool rotation;
-    bool sound;
-    bool perspective;
     bool oo_white;
     bool ooo_white;
     bool oo_black;
@@ -33,7 +26,6 @@ struct Game {
     void castle(int x1, int y1);
     bool check(int x1, int y1);
     bool end();
-    void mate();
 
     void pawn(bool ch);
     void knight(bool ch);
@@ -44,7 +36,6 @@ struct Game {
 
     public:
     Game();
-    void menu();
     void move(int x, int y);
     void draw(sf::RenderTarget& window);
 };

@@ -16,12 +16,9 @@ int main() {
             if (event.type == Event::Closed)
                 window.close();
 
-            if (Keyboard::isKeyPressed(Keyboard::Escape))
-                game.menu();
-
             if(event.type == Event::MouseButtonPressed){
                 if(event.mouseButton.button == Mouse::Left) {
-                    game.move(event.mouseButton.y * 900 / window.getSize().y, event.mouseButton.x * 1200 / window.getSize().x);
+                    game.move(event.mouseButton.x * 900 / window.getSize().y, event.mouseButton.y * 1200 / window.getSize().x);
                 }
             }
         }

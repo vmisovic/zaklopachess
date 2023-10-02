@@ -7,10 +7,10 @@ Ui::Ui() {
     newgame = false;
     playing = false;
     paused = false;
-    rotation = false;
-    sound = false;
-    perspective = false;
-    coordinate = false;
+    rotation = true;
+    sound = true;
+    perspective = true;
+    coordinate = true;
     options_menu = false;
 
     button_color = Color(0x292E42FF);
@@ -89,7 +89,9 @@ Ui::Ui() {
     text_rotation.setFont(font);
     text_rotation.setCharacterSize(20);
     text_rotation.setStyle(Text::Bold);
+    text_rotation.setString("ON");
     text_rotation.setFillColor(Color(0xC0CAF5FF));
+    text_rotation.setPosition(Vector2f(1010.f, 162.f));
 
     // SOUND
     button_sound.setSize(Vector2f(200.f, 50.f));
@@ -104,7 +106,9 @@ Ui::Ui() {
     text_sound.setFont(font);
     text_sound.setCharacterSize(20);
     text_sound.setStyle(Text::Bold);
+    text_sound.setString("ON");
     text_sound.setFillColor(Color(0xC0CAF5FF));
+    text_sound.setPosition(Vector2f(1010.f, 362.f));
 
     // PERSPECTIVE
     button_perspective.setSize(Vector2f(200.f, 50.f));
@@ -119,6 +123,7 @@ Ui::Ui() {
     text_perspective.setFont(font);
     text_perspective.setCharacterSize(20);
     text_perspective.setStyle(Text::Bold);
+    text_perspective.setString("WHITE");
     text_perspective.setFillColor(Color(0xC0CAF5FF));
     text_perspective.setPosition(Vector2f(990.f, 262.f));
 
@@ -135,7 +140,9 @@ Ui::Ui() {
     text_coordinate.setFont(font);
     text_coordinate.setCharacterSize(20);
     text_coordinate.setStyle(Text::Bold);
+    text_coordinate.setString("ON");
     text_coordinate.setFillColor(Color(0xC0CAF5FF));
+    text_coordinate.setPosition(Vector2f(1010.f, 462.f));
 
     // OK
     button_ok.setSize(Vector2f(200.f, 50.f));
@@ -159,50 +166,221 @@ Ui::Ui() {
     pause.setFillColor(Color(0x00404080));
     pause.setPosition(Vector2f(50.f, 50.f));
 
-    update_rotation();
-    update_sound();
-    update_perspective();
-    update_coordinate();
+    // BOARD
+    white_square.setSize(Vector2f(100.f, 100.f));
+    white_square.setFillColor(Color(0x908F8DFF));
+    black_square.setSize(Vector2f(100.f, 100.f));
+    black_square.setFillColor(Color(0x6E6D6BFF));
+    possible_square.setRadius(25.f);
+    possible_square.setFillColor(Color(0x00000040));
+    selected_square.setSize(Vector2f(100.0f, 100.0f));
+    selected_square.setFillColor(Color(0x7590A1FF));
+
+    // PAWN
+    if (!white_pawn.loadFromFile("assets/textures/white_pawn.png"))
+        std::cout << "Failed to open white_pawn.png" << std::endl;
+    if (!black_pawn.loadFromFile("assets/textures/black_pawn.png"))
+        std::cout << "Failed to open black_pawn.png" << std::endl;
+
+    // KNIGHT
+    if (!white_knight.loadFromFile("assets/textures/white_knight.png"))
+        std::cout << "Failed to open white_knight.png" << std::endl;
+    if (!black_knight.loadFromFile("assets/textures/black_knight.png"))
+        std::cout << "Failed to open black_knight.png" << std::endl;
+
+    // BISHOP
+    if (!white_bishop.loadFromFile("assets/textures/white_bishop.png"))
+        std::cout << "Failed to open white_bishop.png" << std::endl;
+    if (!black_bishop.loadFromFile("assets/textures/black_bishop.png"))
+        std::cout << "Failed to open black_bishop.png" << std::endl;
+
+    // ROOK
+    if (!white_rook.loadFromFile("assets/textures/white_rook.png"))
+        std::cout << "Failed to open white_rook.png" << std::endl;
+    if (!black_rook.loadFromFile("assets/textures/black_rook.png"))
+        std::cout << "Failed to open black_rook.png" << std::endl;
+
+    // QUEEN
+    if (!white_queen.loadFromFile("assets/textures/white_queen.png"))
+        std::cout << "Failed to open white_queen.png" << std::endl;
+    if (!black_queen.loadFromFile("assets/textures/black_queen.png"))
+        std::cout << "Failed to open black_queen.png" << std::endl;
+
+    // KING
+    if (!white_king.loadFromFile("assets/textures/white_king.png"))
+        std::cout << "Failed to open white_king.png" << std::endl;
+    if (!black_king.loadFromFile("assets/textures/black_king.png"))
+        std::cout << "Failed to open black_king.png" << std::endl;
+
+    // SOUND
+    if (!move.loadFromFile("assets/sounds/move.flac"))
+        std::cout << "Failed to open move.flac" << std::endl;
+    if (!capture.loadFromFile("assets/sounds/capture.flac"))
+        std::cout << "Failed to open capture.flac" << std::endl;
 }
 
-void Ui::update_settings(bool *paused_game, bool *rotation_game, bool *sound_game, bool *perspective_game) {
-    *paused_game = paused;
-    *rotation_game = rotation;
-    *sound_game = sound;
-    *perspective_game = perspective;
+void Ui::play_sound(bool c) {
+    if(sound) {
+        if (c)
+            sound_effect.setBuffer(capture);
+        else
+            sound_effect.setBuffer(move);
+        sound_effect.play();
+    }
 }
 
-void Ui::draw_coordinate(RenderTarget& window) {
-        for(int i = 1; i < 9; i++) {
-            text.setString(std::to_string(i));
-            text.setPosition(Vector2f(20.f, (9 - i) * 100.f - 10.f));
-            window.draw(text);
-            std::string letter(1, i + 64);
-            text.setString(letter);
-            text.setPosition(Vector2f(i * 100.f - 5.f, 860.f));
-            window.draw(text);
-        }
-}
-
-void Ui::draw_rotated_coordinate(RenderTarget& window) {
+void Ui::draw_coordinate(RenderTarget& window, bool side) {
+    int j;
     for(int i = 1; i < 9; i++) {
-        text.setString(std::to_string(i));
+        if(side) j = 9 - i;
+        else j = i;
+        text.setString(std::to_string(j));
         text.setPosition(Vector2f(20.f, i * 100.f - 10.f));
         window.draw(text);
-        std::string letter(1, 73 - i);
+        std::string letter(1, 73 - j);
         text.setString(letter);
         text.setPosition(Vector2f(i * 100.f - 5.f, 860.f));
         window.draw(text);
     }
 }
 
-void Ui::draw(RenderTarget& window, bool rotation) {
-    if(coordinate) {
-        if(rotation)
-            draw_coordinate(window);
-        else
-            draw_rotated_coordinate(window);
+void Ui::draw_board(sf::RenderTarget& window, char position[8][8], int possible[8][8], int x, int y) {
+    int m, n;
+    if(!side) {
+        x = 7 - x;
+        y = 7 - y;
     }
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            if(i == x && j == y) {
+                selected_square.setPosition(Vector2f(100.f * j + 50.f, 100.f * i + 50.f));
+                window.draw(selected_square);
+            }
+            else {
+                if((i + j + 1) % 2) {
+                    white_square.setPosition(Vector2f(100.f * j + 50.f, 100.f * i + 50.f));
+                    window.draw(white_square);
+                }
+                else {
+                    black_square.setPosition(Vector2f(100.f * j + 50.f, 100.f * i + 50.f));
+                    window.draw(black_square);
+                }
+            }
+        }
+    }
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            if(side) {
+                m = j;
+                n = i;
+            }
+            else {
+                m = 7 - j;
+                n = 7 - i;
+            }
+            switch (position[i][j]) {
+                case 'K':
+                    piece.setTexture(white_king);
+                    break;
+                case 'Q':
+                    piece.setTexture(white_queen);
+                    break;
+                case 'R':
+                    piece.setTexture(white_rook);
+                    break;
+                case 'B':
+                    piece.setTexture(white_bishop);
+                    break;
+                case 'N':
+                    piece.setTexture(white_knight);
+                    break;
+                case 'P':
+                    piece.setTexture(white_pawn);
+                    break;
+                case 'k':
+                    piece.setTexture(black_king);
+                    break;
+                case 'q':
+                    piece.setTexture(black_queen);
+                    break;
+                case 'r':
+                    piece.setTexture(black_rook);
+                    break;
+                case 'b':
+                    piece.setTexture(black_bishop);
+                    break;
+                case 'n':
+                    piece.setTexture(black_knight);
+                    break;
+                case 'p':
+                    piece.setTexture(black_pawn);
+                    break;
+            }
+            if(isalpha(position[i][j])) {
+                piece.setPosition(Vector2f(m * 100.f + 50.f, n * 100.f + 50.f));
+                window.draw(piece);
+            }
+            if(possible[i][j]) {
+                possible_square.setPosition(Vector2f(100.f * m + 75.f, 100.f * n + 75.f));
+                window.draw(possible_square);
+            }
+        }
+    }
+}
+
+void Ui::menu(RenderTarget& window) {
+    window.draw(pause);
+    if(options_menu) {
+        window.draw(label_rotation);
+        window.draw(button_rotation);
+        window.draw(text_rotation);
+
+        window.draw(label_sound);
+        window.draw(button_sound);
+        window.draw(text_sound);
+
+        window.draw(label_perspective);
+        window.draw(button_perspective);
+        window.draw(text_perspective);
+
+        window.draw(label_coordinate);
+        window.draw(button_coordinate);
+        window.draw(text_coordinate);
+
+        window.draw(button_ok);
+        window.draw(text_ok);
+
+        if(!playing) {
+            window.draw(winner);
+        }
+    }
+    else {
+        window.draw(button_newgame);
+        window.draw(text_newgame);
+
+        window.draw(button_options);
+        window.draw(text_options);
+
+        window.draw(button_quit);
+        window.draw(text_quit);
+
+        if(paused) {
+            window.draw(button_resume);
+            window.draw(text_resume);
+        }
+
+        if(!playing) {
+            window.draw(winner);
+        }
+    }
+}
+
+void Ui::draw(RenderTarget& window, char position[8][8], int possible[8][8], int x, int y, bool turn) {
+    side = (turn && rotation) || (!rotation && perspective);
+    window.clear(Color(0x1A1B26FF));
+    draw_board(window, position, possible, x, y);
+    if(coordinate)
+        draw_coordinate(window, side);
     if(!playing || paused) {
         menu(window);
     }
@@ -212,65 +390,7 @@ void Ui::draw(RenderTarget& window, bool rotation) {
     }
 }
 
-void Ui::menu(RenderTarget& window) {
-    window.draw(pause);
-    if(options_menu) {
-        // ROTATION
-        window.draw(label_rotation);
-        window.draw(button_rotation);
-        window.draw(text_rotation);
-
-        // SOUND
-        window.draw(label_sound);
-        window.draw(button_sound);
-        window.draw(text_sound);
-
-        // PERSPECTIVE
-        window.draw(label_perspective);
-        window.draw(button_perspective);
-        window.draw(text_perspective);
-
-        // COORDINATE
-        window.draw(label_coordinate);
-        window.draw(button_coordinate);
-        window.draw(text_coordinate);
-
-        // OK
-        window.draw(button_ok);
-        window.draw(text_ok);
-
-        // WINNER
-        if(!playing) {
-            window.draw(winner);
-        }
-    }
-    else {
-        // NEW GAME
-        window.draw(button_newgame);
-        window.draw(text_newgame);
-
-        // OPTIONS
-        window.draw(button_options);
-        window.draw(text_options);
-
-        // QUIT
-        window.draw(button_quit);
-        window.draw(text_quit);
-
-        // RESUME
-        if(paused) {
-            window.draw(button_resume);
-            window.draw(text_resume);
-        }
-
-        // WINNER
-        if(!playing) {
-            window.draw(winner);
-        }
-    }
-}
-
-void Ui::input(int mouse_x, int mouse_y) {
+void Ui::input(int mouse_x, int mouse_y, int *x, int *y, bool turn) {
     if(!playing || paused) {
         if(options_menu) {
             if(button_rotation.getPosition().x < mouse_x && mouse_x < button_rotation.getPosition().x + button_rotation.getSize().x &&
@@ -315,9 +435,21 @@ void Ui::input(int mouse_x, int mouse_y) {
         }
     }
     else {
+        *x = (mouse_y - 50) / 100;
+        *y = (mouse_x - 50) / 100;
+        if(*x >= 0 && *x < 8 && *y >= 0 && *y < 8 && !paused) {
+            if(!side) {
+                *x = 7 - *x;
+                *y = 7 - *y;
+            }
+        }
+        else {
+            *x = -1;
+            *y = -1;
+        }
         if(button_pause.getPosition().x < mouse_x && mouse_x < button_pause.getPosition().x + button_pause.getSize().x &&
                 button_pause.getPosition().y < mouse_y && mouse_y < button_pause.getPosition().y + button_pause.getSize().y) {
-            show_menu();
+            paused = true;
         }
     }
 }
@@ -369,11 +501,6 @@ void Ui::update_coordinate() {
     }
 }
 
-void Ui::show_menu() {
-    if(playing)
-        paused = true;
-}
-
 bool Ui::start_game() {
     if(newgame) {
         playing = true;
@@ -383,17 +510,19 @@ bool Ui::start_game() {
     return false;
 }
 
-void Ui::end_game(bool check, bool turn) {
-    playing = false;
-    if(check) {
-        if(turn)
-            winner.setString("CHECKMATE BLACK WON");
-        else
-            winner.setString("CHECKMATE WHITE WON");
-        winner.setPosition(Vector2f(215.f, 422.f));
-    }
-    else {
-        winner.setString("STALEMATE DRAW");
-        winner.setPosition(Vector2f(275.f, 422.f));
+void Ui::end_game(bool end, bool check, bool turn) {
+    if(end) {
+        playing = false;
+        if(check) {
+            if(turn)
+                winner.setString("CHECKMATE BLACK WON");
+            else
+                winner.setString("CHECKMATE WHITE WON");
+            winner.setPosition(Vector2f(215.f, 422.f));
+        }
+        else {
+            winner.setString("STALEMATE DRAW");
+            winner.setPosition(Vector2f(275.f, 422.f));
+        }
     }
 }
