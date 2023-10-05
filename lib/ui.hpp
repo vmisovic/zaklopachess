@@ -48,7 +48,6 @@ struct Ui {
     bool perspective;
     bool coordinate;
     bool playing;
-    bool paused;
     bool newgame;
     bool options_menu;
     bool side;
@@ -86,6 +85,7 @@ struct Ui {
     void update_coordinate();
 
     public:
+    bool paused;
     Ui();
     void draw(RenderTarget& window, char position[8][8], int possible[8][8], int x, int y, bool turn);
     void input(int mouse_x, int mouse_y, int *x, int *y, bool turn);
