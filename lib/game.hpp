@@ -1,3 +1,6 @@
+#ifndef GAME_HPP
+#define GAME_HPP
+
 #include <SFML/Graphics.hpp>
 #include <cstring>
 #include "../lib/ui.hpp"
@@ -39,3 +42,5 @@ struct Game {
     void move(int x, int y);
     void draw(sf::RenderTarget& window);
 };
+
+#endif

@@ -13,13 +13,19 @@ Ui::Ui() {
     coordinate = true;
     options_menu = false;
 
+    background_color = Color(0x1A1B26FF);
+    text_color = Color(0xC0CAF5FF);
     button_color = Color(0x292E42FF);
     inactive_button_color = Color(0x16161EFF);
+    black_square_color = Color(0x6E6D6BFF);
+    white_square_color = Color(0x908F8DFF);
+    selected_square_color = Color(0x7590A1FF);
+    possible_square_color = Color(0x00000040);
 
     text.setFont(font);
     text.setCharacterSize(20);
     text.setStyle(sf::Text::Bold);
-    text.setFillColor(Color(0xC0CAF5FF));
+    text.setFillColor(text_color);
 
     // PAUSE
     button_pause.setSize(Vector2f(200.f, 50.f));
@@ -28,7 +34,7 @@ Ui::Ui() {
     text_pause.setFont(font);
     text_pause.setCharacterSize(20);
     text_pause.setStyle(sf::Text::Bold);
-    text_pause.setFillColor(Color(0xC0CAF5FF));
+    text_pause.setFillColor(text_color);
     text_pause.setString("PAUSE");
     text_pause.setPosition(Vector2f(990.f, 762.f));
 
@@ -39,7 +45,7 @@ Ui::Ui() {
     text_newgame.setFont(font);
     text_newgame.setCharacterSize(20);
     text_newgame.setStyle(sf::Text::Bold);
-    text_newgame.setFillColor(Color(0xC0CAF5FF));
+    text_newgame.setFillColor(text_color);
     text_newgame.setString("NEW GAME");
     text_newgame.setPosition(Vector2f(970.f, 162.f));
 
@@ -50,7 +56,7 @@ Ui::Ui() {
     text_options.setFont(font);
     text_options.setCharacterSize(20);
     text_options.setStyle(sf::Text::Bold);
-    text_options.setFillColor(Color(0xC0CAF5FF));
+    text_options.setFillColor(text_color);
     text_options.setString("OPTIONS");
     text_options.setPosition(Vector2f(980.f, 262.f));
 
@@ -61,7 +67,7 @@ Ui::Ui() {
     text_quit.setFont(font);
     text_quit.setCharacterSize(20);
     text_quit.setStyle(sf::Text::Bold);
-    text_quit.setFillColor(Color(0xC0CAF5FF));
+    text_quit.setFillColor(text_color);
     text_quit.setString("QUIT");
     text_quit.setPosition(Vector2f(1000.f, 362.f));
 
@@ -72,7 +78,7 @@ Ui::Ui() {
     text_resume.setFont(font);
     text_resume.setCharacterSize(20);
     text_resume.setStyle(Text::Bold);
-    text_resume.setFillColor(Color(0xC0CAF5FF));
+    text_resume.setFillColor(text_color);
     text_resume.setString("RESUME");
     text_resume.setPosition(Vector2f(980.f, 762.f));
 
@@ -83,14 +89,14 @@ Ui::Ui() {
     label_rotation.setFont(font);
     label_rotation.setCharacterSize(16);
     label_rotation.setStyle(sf::Text::Bold);
-    label_rotation.setFillColor(Color(0xC0CAF5FF));
+    label_rotation.setFillColor(text_color);
     label_rotation.setString("ROTATION");
     label_rotation.setPosition(Vector2f(925.f, 130.f));
     text_rotation.setFont(font);
     text_rotation.setCharacterSize(20);
     text_rotation.setStyle(Text::Bold);
     text_rotation.setString("ON");
-    text_rotation.setFillColor(Color(0xC0CAF5FF));
+    text_rotation.setFillColor(text_color);
     text_rotation.setPosition(Vector2f(1010.f, 162.f));
 
     // SOUND
@@ -100,14 +106,14 @@ Ui::Ui() {
     label_sound.setFont(font);
     label_sound.setCharacterSize(16);
     label_sound.setStyle(sf::Text::Bold);
-    label_sound.setFillColor(Color(0xC0CAF5FF));
+    label_sound.setFillColor(text_color);
     label_sound.setString("SOUND");
     label_sound.setPosition(Vector2f(925.f, 330.f));
     text_sound.setFont(font);
     text_sound.setCharacterSize(20);
     text_sound.setStyle(Text::Bold);
     text_sound.setString("ON");
-    text_sound.setFillColor(Color(0xC0CAF5FF));
+    text_sound.setFillColor(text_color);
     text_sound.setPosition(Vector2f(1010.f, 362.f));
 
     // PERSPECTIVE
@@ -117,14 +123,14 @@ Ui::Ui() {
     label_perspective.setFont(font);
     label_perspective.setCharacterSize(16);
     label_perspective.setStyle(sf::Text::Bold);
-    label_perspective.setFillColor(Color(0xC0CAF5FF));
+    label_perspective.setFillColor(text_color);
     label_perspective.setString("PERSPECTIVE");
     label_perspective.setPosition(Vector2f(925.f, 230.f));
     text_perspective.setFont(font);
     text_perspective.setCharacterSize(20);
     text_perspective.setStyle(Text::Bold);
     text_perspective.setString("WHITE");
-    text_perspective.setFillColor(Color(0xC0CAF5FF));
+    text_perspective.setFillColor(text_color);
     text_perspective.setPosition(Vector2f(990.f, 262.f));
 
     // COORDINATE
@@ -134,14 +140,14 @@ Ui::Ui() {
     label_coordinate.setFont(font);
     label_coordinate.setCharacterSize(16);
     label_coordinate.setStyle(sf::Text::Bold);
-    label_coordinate.setFillColor(Color(0xC0CAF5FF));
+    label_coordinate.setFillColor(text_color);
     label_coordinate.setString("COORDINATE");
     label_coordinate.setPosition(Vector2f(925.f, 430.f));
     text_coordinate.setFont(font);
     text_coordinate.setCharacterSize(20);
     text_coordinate.setStyle(Text::Bold);
     text_coordinate.setString("ON");
-    text_coordinate.setFillColor(Color(0xC0CAF5FF));
+    text_coordinate.setFillColor(text_color);
     text_coordinate.setPosition(Vector2f(1010.f, 462.f));
 
     // OK
@@ -151,7 +157,7 @@ Ui::Ui() {
     text_ok.setFont(font);
     text_ok.setCharacterSize(20);
     text_ok.setStyle(Text::Bold);
-    text_ok.setFillColor(Color(0xC0CAF5FF));
+    text_ok.setFillColor(text_color);
     text_ok.setString("OK");
     text_ok.setPosition(Vector2f(1010.f, 762.f));
 
@@ -159,7 +165,7 @@ Ui::Ui() {
     winner.setFont(font);
     winner.setCharacterSize(40);
     winner.setStyle(sf::Text::Bold);
-    winner.setFillColor(Color(0xC0CAF5FF));
+    winner.setFillColor(text_color);
 
     // DIM BOARD
     pause.setSize(Vector2f(800.f, 800.f));
@@ -168,13 +174,13 @@ Ui::Ui() {
 
     // BOARD
     white_square.setSize(Vector2f(100.f, 100.f));
-    white_square.setFillColor(Color(0x908F8DFF));
+    white_square.setFillColor(white_square_color);
     black_square.setSize(Vector2f(100.f, 100.f));
-    black_square.setFillColor(Color(0x6E6D6BFF));
+    black_square.setFillColor(black_square_color);
     possible_square.setRadius(25.f);
-    possible_square.setFillColor(Color(0x00000040));
+    possible_square.setFillColor(possible_square_color);
     selected_square.setSize(Vector2f(100.0f, 100.0f));
-    selected_square.setFillColor(Color(0x7590A1FF));
+    selected_square.setFillColor(selected_square_color);
 
     // PAWN
     if (!white_pawn.loadFromFile("assets/textures/white_pawn.png"))
@@ -377,7 +383,7 @@ void Ui::menu(RenderTarget& window) {
 
 void Ui::draw(RenderTarget& window, char position[8][8], int possible[8][8], int x, int y, bool turn) {
     side = (turn && rotation) || (!rotation && perspective);
-    window.clear(Color(0x1A1B26FF));
+    window.clear(background_color);
     draw_board(window, position, possible, x, y);
     if(coordinate)
         draw_coordinate(window, side);
@@ -393,45 +399,26 @@ void Ui::draw(RenderTarget& window, char position[8][8], int possible[8][8], int
 void Ui::input(int mouse_x, int mouse_y, int *x, int *y, bool turn) {
     if(!playing || paused) {
         if(options_menu) {
-            if(button_rotation.getPosition().x < mouse_x && mouse_x < button_rotation.getPosition().x + button_rotation.getSize().x &&
-                    button_rotation.getPosition().y < mouse_y && mouse_y < button_rotation.getPosition().y + button_rotation.getSize().y) {
+            if(clicked(button_rotation, mouse_x, mouse_y))
                 update_rotation();
-            }
-            else if(button_sound.getPosition().x < mouse_x && mouse_x < button_sound.getPosition().x + button_sound.getSize().x &&
-                    button_sound.getPosition().y < mouse_y && mouse_y < button_sound.getPosition().y + button_sound.getSize().y) {
+            else if(clicked(button_sound, mouse_x, mouse_y))
                 update_sound();
-            }
-            else if(button_perspective.getPosition().x < mouse_x && mouse_x < button_perspective.getPosition().x + button_perspective.getSize().x &&
-                    button_perspective.getPosition().y < mouse_y && mouse_y < button_perspective.getPosition().y + button_perspective.getSize().y) {
+            else if(clicked(button_perspective, mouse_x, mouse_y))
                 update_perspective();
-            }
-            else if(button_coordinate.getPosition().x < mouse_x && mouse_x < button_coordinate.getPosition().x + button_coordinate.getSize().x &&
-                    button_coordinate.getPosition().y < mouse_y && mouse_y < button_coordinate.getPosition().y + button_coordinate.getSize().y) {
+            else if(clicked(button_coordinate, mouse_x, mouse_y))
                 update_coordinate();
-            }
-            else if(button_ok.getPosition().x < mouse_x && mouse_x < button_ok.getPosition().x + button_ok.getSize().x &&
-                    button_ok.getPosition().y < mouse_y && mouse_y < button_ok.getPosition().y + button_ok.getSize().y) {
+            else if(clicked(button_ok, mouse_x, mouse_y))
                 options_menu = false;
-            }
         }
         else {
-            if(button_newgame.getPosition().x < mouse_x && mouse_x < button_newgame.getPosition().x + button_newgame.getSize().x &&
-                    button_newgame.getPosition().y < mouse_y && mouse_y < button_newgame.getPosition().y + button_newgame.getSize().y) {
+            if(clicked(button_newgame, mouse_x, mouse_y))
                 newgame = true;
-                paused = false;
-            }
-            else if(button_options.getPosition().x < mouse_x && mouse_x < button_options.getPosition().x + button_options.getSize().x &&
-                    button_options.getPosition().y < mouse_y && mouse_y < button_options.getPosition().y + button_options.getSize().y) {
+            else if(clicked(button_options, mouse_x, mouse_y))
                 options_menu = true;
-            }
-            else if(button_quit.getPosition().x < mouse_x && mouse_x < button_quit.getPosition().x + button_quit.getSize().x &&
-                    button_quit.getPosition().y < mouse_y && mouse_y < button_quit.getPosition().y + button_quit.getSize().y) {
+            else if(clicked(button_quit, mouse_x, mouse_y))
                 exit(0);
-            }
-            else if(button_resume.getPosition().x < mouse_x && mouse_x < button_resume.getPosition().x + button_resume.getSize().x &&
-                    button_resume.getPosition().y < mouse_y && mouse_y < button_resume.getPosition().y + button_resume.getSize().y) {
+            else if(clicked(button_resume, mouse_x, mouse_y))
                 paused = false;
-            }
         }
     }
     else {
@@ -447,11 +434,17 @@ void Ui::input(int mouse_x, int mouse_y, int *x, int *y, bool turn) {
             *x = -1;
             *y = -1;
         }
-        if(button_pause.getPosition().x < mouse_x && mouse_x < button_pause.getPosition().x + button_pause.getSize().x &&
-                button_pause.getPosition().y < mouse_y && mouse_y < button_pause.getPosition().y + button_pause.getSize().y) {
+        if(clicked(button_pause, mouse_x, mouse_y))
             paused = true;
-        }
     }
+}
+
+bool Ui::clicked(RectangleShape button, int mouse_x, int mouse_y) {
+    if(button.getPosition().x < mouse_x && mouse_x < button.getPosition().x + button.getSize().x &&
+            button.getPosition().y < mouse_y && mouse_y < button.getPosition().y + button.getSize().y) {
+        return true;
+    }
+    return false;
 }
 
 void Ui::update_rotation() {
@@ -504,6 +497,7 @@ void Ui::update_coordinate() {
 bool Ui::start_game() {
     if(newgame) {
         playing = true;
+        paused = false;
         newgame = false;
         return true;
     }

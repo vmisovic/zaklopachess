@@ -1,3 +1,6 @@
+#ifndef UI_HPP
+#define UI_HPP
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
@@ -7,8 +10,14 @@ using namespace sf;
 
 struct Ui {
     private:
+    Color background_color;
+    Color text_color;
     Color button_color;
     Color inactive_button_color;
+    Color black_square_color;
+    Color white_square_color;
+    Color selected_square_color;
+    Color possible_square_color;
 
     Font font;
     Text text;
@@ -47,7 +56,6 @@ struct Ui {
     bool rotation;
     bool perspective;
     bool coordinate;
-    bool playing;
     bool newgame;
     bool options_menu;
     bool side;
@@ -78,6 +86,7 @@ struct Ui {
     void draw_coordinate(RenderTarget& window, bool side);
     void draw_board(RenderTarget& window, char position[8][8], int possible[8][8], int x, int y);
     void menu(RenderTarget& window);
+    bool clicked(RectangleShape button, int mouse_x, int mouse_y);
 
     void update_rotation();
     void update_sound();
@@ -86,6 +95,7 @@ struct Ui {
 
     public:
     bool paused;
+    bool playing;
     Ui();
     void draw(RenderTarget& window, char position[8][8], int possible[8][8], int x, int y, bool turn);
     void input(int mouse_x, int mouse_y, int *x, int *y, bool turn);
@@ -93,3 +103,5 @@ struct Ui {
     bool start_game();
     void end_game(bool end, bool check, bool turn);
 };
+
+#endif

@@ -61,7 +61,7 @@ void Game::move(int mouse_x, int mouse_y) {
     int x1 = -1, y1 = -1;
     ui.input(mouse_x, mouse_y, &x1, &y1, turn);
     if(ui.start_game()) new_game();
-    if(!ui.paused) {
+    if(ui.playing && !ui.paused) {
         if(x == -1 || y == -1) {
             if((turn && isupper(position[x1][y1])) || (!turn && islower(position[x1][y1]))) {
                 x = x1;
