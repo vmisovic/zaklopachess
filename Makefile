@@ -1,5 +1,6 @@
 SRC_DIR=src
 BUILD_DIR=build
+RM=rm -r
 BINARY=build/zaklopachess
 
 CXX=g++
@@ -25,3 +26,6 @@ compile:
 
 run: compile
 	./$(BINARY)
+
+clean:
+	$(RM) $(BUILD_DIR)
