@@ -1,4 +1,4 @@
-#include "../lib/ui.hpp"
+#include "ui.hpp"
 
 Ui::Ui() {
     if (!font.loadFromFile("assets/font/Exo2.ttf"))

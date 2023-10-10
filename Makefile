@@ -1,13 +1,15 @@
 SRC_DIR=src
+LIB_DIR=lib
 BUILD_DIR=build
-RM=rm -r
 BINARY=build/zaklopachess
 
 CXX=g++
 GDB=gdb
 MKDIR=mkdir -p
+RM=rm -r
 
 LDFLAGS=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+CXXFLAGS=-Wall -I $(LIB_DIR) -O3
 
 SOURCES=$(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS=$(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
@@ -15,10 +17,10 @@ OBJECTS=$(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
 all: compile
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) -MMD -MP -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(BINARY): $(OBJECTS)
-	$(CXX) $(OBJECTS) -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $@ $(LDFLAGS)
 
 compile:
 	$(MKDIR) $(BUILD_DIR)

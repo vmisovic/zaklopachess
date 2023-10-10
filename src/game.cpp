@@ -1,4 +1,4 @@
-#include "../lib/game.hpp"
+#include "game.hpp"
 
 Game::Game() {
     reset_possible();

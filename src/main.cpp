@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "../lib/game.hpp"
+#include "game.hpp"
 
 using namespace sf;
 

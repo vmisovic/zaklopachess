@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <cstring>
-#include "../lib/ui.hpp"
+#include "ui.hpp"
 
 struct Game {
     private:
