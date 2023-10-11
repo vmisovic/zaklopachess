@@ -9,10 +9,12 @@ struct Game {
     private:
     char position[8][8];
     int possible[8][8];
+    bool covered[8][8];
 
     Ui ui;
 
     bool turn;
+    bool ch;
     bool oo_white;
     bool ooo_white;
     bool oo_black;
@@ -24,18 +26,19 @@ struct Game {
 
     void new_game();
     void reset_possible();
+    bool check_square(int x1, int y1);
     void update_enpassant(int x1, int y1);
     void promotion(int x1, int y1);
     void castle(int x1, int y1);
     bool check(int x1, int y1);
     bool end();
 
-    void pawn(bool ch);
-    void knight(bool ch);
-    void bishop(bool ch);
-    void rook(bool ch);
-    void queen(bool ch);
-    void king(bool ch);
+    void pawn();
+    void knight();
+    void bishop();
+    void rook();
+    void queen();
+    void king();
 
     public:
     Game();
