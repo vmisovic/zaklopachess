@@ -9,12 +9,13 @@ struct Game {
     private:
     char position[8][8];
     int possible[8][8];
-    bool covered[8][8];
 
     Ui ui;
 
     bool turn;
     bool ch;
+    bool next_check;
+    bool mate;
     bool oo_white;
     bool ooo_white;
     bool oo_black;
@@ -22,7 +23,6 @@ struct Game {
     int enpassant;
     int x;
     int y;
-    int moves;
 
     void new_game();
     void reset_possible();
@@ -37,7 +37,6 @@ struct Game {
     void knight();
     void bishop();
     void rook();
-    void queen();
     void king();
 
     public:

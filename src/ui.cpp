@@ -422,20 +422,20 @@ void Ui::input(int mouse_x, int mouse_y, int *x, int *y, bool turn) {
         }
     }
     else {
-        *x = (mouse_y - 50) / 100;
-        *y = (mouse_x - 50) / 100;
-        if(*x >= 0 && *x < 8 && *y >= 0 && *y < 8 && !paused) {
-            if(!side) {
-                *x = 7 - *x;
-                *y = 7 - *y;
-            }
-        }
-        else {
-            *x = -1;
-            *y = -1;
-        }
         if(clicked(button_pause, mouse_x, mouse_y))
             paused = true;
+        int x1 = (mouse_y - 50) / 100;
+        int y1 = (mouse_x - 50) / 100;
+        if(x1 >= 0 && x1 < 8 && y1 >= 0 && y1 < 8) {
+            if(side) {
+                *x = x1;
+                *y = y1;
+            }
+            if(!side) {
+                *x = 7 - x1;
+                *y = 7 - y1;
+            }
+        }
     }
 }
 
