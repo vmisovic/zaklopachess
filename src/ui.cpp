@@ -504,19 +504,23 @@ bool Ui::start_game() {
     return false;
 }
 
-void Ui::end_game(bool end, bool check, bool turn) {
-    if(end) {
-        playing = false;
-        if(check) {
-            if(turn)
-                winner.setString("CHECKMATE BLACK WON");
-            else
-                winner.setString("CHECKMATE WHITE WON");
-            winner.setPosition(Vector2f(215.f, 422.f));
-        }
-        else {
+void Ui::end_game(int mate) {
+    playing = false;
+    switch (mate) {
+        case 1:
             winner.setString("STALEMATE DRAW");
             winner.setPosition(Vector2f(275.f, 422.f));
-        }
+            break;
+        case 2:
+            winner.setString("CHECKMATE WHITE WON");
+            winner.setPosition(Vector2f(215.f, 422.f));
+            break;
+        case 3:
+            winner.setString("CHECKMATE BLACK WON");
+            winner.setPosition(Vector2f(215.f, 422.f));
+            break;
+        default:
+            playing = true;
+            break;
     }
 }

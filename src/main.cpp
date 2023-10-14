@@ -1,29 +1,10 @@
 #include <SFML/Graphics.hpp>
-#include "game.hpp"
+#include "zaklopachess.hpp"
 
 using namespace sf;
 
 int main() {
-    RenderWindow window(VideoMode(1200, 900), "zaklopachess", Style::Close);
-    window.setFramerateLimit(60);
-
-    Game game;
-    while (window.isOpen())
-    {
-        Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == Event::Closed)
-                window.close();
-
-            if(event.type == Event::MouseButtonPressed){
-                if(event.mouseButton.button == Mouse::Left) {
-                    game.move(event.mouseButton.x * 1200 / window.getSize().x, event.mouseButton.y * 900 / window.getSize().y);
-                }
-            }
-        }
-        game.draw(window);
-        window.display();
-    }
+    ZaklopaChess chess;
+    chess.play();
     return 0;
 }

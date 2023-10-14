@@ -41,6 +41,7 @@ void Game::new_game() {
     ooo_white = true;
     oo_black = true;
     ooo_black = true;
+    moved = false;
     turn = true;
     ch = true;
 }
@@ -51,42 +52,52 @@ void Game::reset_possible() {
             possible[i][j] = 0;
 }
 
-void Game::draw(sf::RenderTarget& window) {
-    ui.draw(window, position, possible, x, y, turn);
-}
-
-void Game::move(int mouse_x, int mouse_y) {
-    int x1 = -1, y1 = -1;
-    ui.input(mouse_x, mouse_y, &x1, &y1, turn);
-    if(ui.start_game()) new_game();
-    if(ui.playing && !ui.paused) {
-        if(x == -1 || y == -1) {
-            if((turn && isupper(position[x1][y1])) || (!turn && islower(position[x1][y1]))) {
-                x = x1;
-                y = y1;
-                pawn();
-                knight();
-                bishop();
-                rook();
-                king();
-            }
-        }
-        else {
-            if(mouse_x < 850 && mouse_y < 850 && possible[x1][y1]) {
-                update_enpassant(x1, y1);
-                castle(x1, y1);
-                ui.play_sound(position[x1][y1] != ' ');
-                position[x1][y1] = position[x][y];
-                position[x][y] = ' ';
-                promotion(x1, y1);
-                turn = !turn;
-                ui.end_game(end(), check(-1, -1), turn);
-            }
-            x = -1;
-            y = -1;
-            reset_possible();
+void Game::play(int x1, int y1) {
+    capture = false;
+    moved = false;
+    if(x == -1 || y == -1) {
+        if((turn && isupper(position[x1][y1])) || (!turn && islower(position[x1][y1]))) {
+            x = x1;
+            y = y1;
+            pawn();
+            knight();
+            bishop();
+            rook();
+            king();
         }
     }
+    else {
+        if(possible[x1][y1]) {
+            update_enpassant(x1, y1);
+            castle(x1, y1);
+            if(position[x1][y1] != ' ') capture = true;
+            make_move(x1, y1);
+            position[x1][y1] = position[x][y];
+            position[x][y] = ' ';
+            promotion(x1, y1);
+            moved = true;
+            turn = !turn;
+            end();
+        }
+        x = -1;
+        y = -1;
+        reset_possible();
+    }
+}
+
+void Game::make_move(int x1, int y1) {
+    move = "";
+    if(!turn) move += toupper(position[x][y]);
+    else move += position[x][y];
+    move += 65 + y;
+    move += 56 - x;
+    if(capture) move += 'X';
+    move += 65 + y1;
+    move += 56 - x1;
+    cerr << move << endl;
+}
+
+void paly_move(string move) {
 }
 
 bool Game::check_square(int x1, int y1) {
@@ -95,7 +106,7 @@ bool Game::check_square(int x1, int y1) {
              (!islower(position[x1][y1]) && islower(position[x][y])))) {
         if((!turn && position[x1][y1] == 'k') || (turn && position[x1][y1] == 'K'))
             next_check = true;
-        if(ch) mate = false;
+        if(ch) mate = 0;
         return true;
     }
     return false;
@@ -149,6 +160,7 @@ void Game::update_enpassant(int x1, int y1) {
     else
         enpassant = -1;
     if(possible[x1][y1] == 2){
+        capture = true;
         if(position[x][y] == 'P')
             position[x1 + 1][y1] = ' ';
         else if(position[x][y] == 'p')
@@ -338,9 +350,8 @@ bool Game::check(int x1, int y1) {
     ch = true;
     return next_check;
 }
-
-bool Game::end() {
-    mate = true;
+void Game::end() {
+    mate = 1;
     for(int i = 0; i < 8; i++)
         for(int j = 0; j < 8; j++)
             if((turn && isupper(position[i][j])) || (!turn && islower(position[i][j]))) {
@@ -353,5 +364,9 @@ bool Game::end() {
                 rook();
                 king();
             }
-    return mate;
+    if(mate && check(-1, -1)) {
+        mate++;
+        if(turn)
+            mate++;
+    }
 }

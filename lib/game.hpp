@@ -1,37 +1,31 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include <SFML/Graphics.hpp>
+#include <iostream>
 #include <cstring>
-#include "ui.hpp"
+#include <string>
+
+using namespace std;
 
 struct Game {
     private:
-    char position[8][8];
-    int possible[8][8];
-
-    Ui ui;
-
-    bool turn;
     bool ch;
     bool next_check;
-    bool mate;
     bool oo_white;
     bool ooo_white;
     bool oo_black;
     bool ooo_black;
     int enpassant;
-    int x;
-    int y;
+    string move;
 
-    void new_game();
     void reset_possible();
     bool check_square(int x1, int y1);
     void update_enpassant(int x1, int y1);
     void promotion(int x1, int y1);
     void castle(int x1, int y1);
+    void make_move(int x1, int y1);
     bool check(int x1, int y1);
-    bool end();
+    void end();
 
     void pawn();
     void knight();
@@ -40,9 +34,18 @@ struct Game {
     void king();
 
     public:
+    char position[8][8];
+    int possible[8][8];
+    int x;
+    int y;
+    bool turn;
+    bool moved;
+    bool capture;
+    int mate;
     Game();
-    void move(int x, int y);
-    void draw(sf::RenderTarget& window);
+    void new_game();
+    void play(int x, int y);
+    void play_move(string move);
 };
 
 #endif

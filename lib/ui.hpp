@@ -4,7 +4,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
-#include <string>
 
 using namespace sf;
 
@@ -101,7 +100,7 @@ struct Ui {
     void input(int mouse_x, int mouse_y, int *x, int *y, bool turn);
     void play_sound(bool capture);
     bool start_game();
-    void end_game(bool end, bool check, bool turn);
+    void end_game(int mate);
 };
 
 #endif
