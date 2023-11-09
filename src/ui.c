@@ -140,25 +140,35 @@ void draw_board(Ui *ui, char position[8][8], int possible[8][8], int x, int y, b
 
 void draw_menu(Ui *ui) {
     if(ui -> options) {
+        DrawText("ROTATION", 925, 130, 20, WHITE);
         DrawRectangleRec(ui -> button1, BUTTON);
         DrawText(ui -> rotation ? "ON" : "OFF", 1010, 165, 20, WHITE);
+
+        DrawText("PERSPECTIVE", 925, 230, 20, WHITE);
         if(ui -> rotation)
             DrawRectangleRec(ui -> button2, BUTTON_D);
         else
             DrawRectangleRec(ui -> button2, BUTTON);
         DrawText(ui -> perspective ? "WHITE" : "BLACK", 990, 265, 20, WHITE);
+
+        DrawText("COORDINATE", 925, 330, 20, WHITE);
         DrawRectangleRec(ui -> button3, BUTTON);
         DrawText(ui -> coordinate ? "ON" : "OFF", 1010, 365, 20, WHITE);
+
+        DrawText("SOUND", 925, 430, 20, WHITE);
         DrawRectangleRec(ui -> button4, BUTTON);
         DrawText(ui -> sound ? "ON" : "OFF", 1010, 465, 20, WHITE);
+
         DrawRectangleRec(ui -> button5, BUTTON);
         DrawText("OK", 1010, 715, 20, WHITE);
     }
     else {
         DrawRectangleRec(ui -> button1, BUTTON);
         DrawText("NEW GAME", 970, 165, 20, WHITE);
+
         DrawRectangleRec(ui -> button2, BUTTON);
         DrawText("OPTIONS", 980, 265, 20, WHITE);
+
         DrawRectangleRec(ui -> button3, BUTTON);
         DrawText("QUIT", 1000, 365, 20, WHITE);
     }
