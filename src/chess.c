@@ -51,6 +51,7 @@ void new_game(Chess *chess) {
 
     chess -> x = -1;
     chess -> y = -1;
+    chess -> mate = 0;
     chess -> enpassant = -1;
     chess -> oo_white = true;
     chess -> ooo_white = true;
