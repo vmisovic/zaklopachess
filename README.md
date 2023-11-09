@@ -10,7 +10,7 @@ The ultimate game of chess crafted in the fields of Zaklopaca.
 Raylib needs to be installed.
 #### Arch
 ```
-sudo pacman -S sfml
+sudo pacman -S raylib
 ```
 Run the game with the following command
 ```
