@@ -3,20 +3,20 @@ LIB_DIR=lib
 BUILD_DIR=build
 BINARY=build/zaklopachess
 
-CXX=g++
+CXX=gcc
 GDB=gdb
 MKDIR=mkdir -p
 RM=rm -r
 
-LDFLAGS=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+LDFLAGS=-lraylib
 CXXFLAGS=-Wall -I $(LIB_DIR) -O3
 
-SOURCES=$(wildcard $(SRC_DIR)/*.cpp)
-OBJECTS=$(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
+SOURCES=$(wildcard $(SRC_DIR)/*.c)
+OBJECTS=$(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SOURCES))
 .PHONY: all run debug clean
 all: compile
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(BINARY): $(OBJECTS)
