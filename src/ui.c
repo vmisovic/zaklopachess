@@ -15,8 +15,11 @@ void set_ui(Ui *ui) {
     ui -> b_knight = LoadTexture("assets/textures/black_knight.png");
     ui -> b_pawn = LoadTexture("assets/textures/black_pawn.png");
 
+#if defined(PLATFORM_WEB)
+#else
     ui -> move_sound = LoadSound("assets/sounds/move.mp3");
     ui -> capture_sound = LoadSound("assets/sounds/capture.mp3");
+#endif
 
     ui -> button1.x = 925;
     ui -> button1.y = 150;
@@ -193,6 +196,7 @@ void draw_end(Ui *ui, int mate) {
 void draw(Ui *ui, char position[8][8], int possible[8][8], int x, int y, bool turn, int mate) {
     bool side = (ui -> rotation && turn) || (!ui -> rotation && ui -> perspective);
     ClearBackground(BACKGROUND);
+    BeginDrawing();
     draw_board(ui, position, possible, x, y, side);
     draw_coordinate(ui, side);
     draw_menu(ui);
